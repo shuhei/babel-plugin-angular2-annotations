@@ -1,0 +1,20 @@
+{
+  "name": "babel-plugin-angular2-at-annotation",
+  "version": "0.0.1",
+  "description": "A babel transformer plugin for Angular 2 @ annotation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "babel",
+    "angular",
+    "angular2",
+    "annotation"
+  ],
+  "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
+  "license": "ISC",
+  "peerDependencies": {
+    "babel-core": "^5.0.0"
+  }
+}
