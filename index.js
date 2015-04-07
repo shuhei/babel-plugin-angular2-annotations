@@ -14,7 +14,11 @@ module.exports = new Transformer('angular2-at-annotation', {
       }));
       var propertyName = t.memberExpression(classRef, t.identifier('annotations'), false);
       var assignment = t.expressionStatement(t.assignmentExpression('=', propertyName, array));
-      return [node, assignment];
+      if (parent.type === 'ExportNamedDeclaration') {
+        this.parentPath.replaceWithMultiple([parent, assignment]);
+      } else {
+        return [node, assignment];
+      }
     }
   }
 });

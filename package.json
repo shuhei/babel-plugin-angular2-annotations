@@ -2,9 +2,10 @@
   "name": "babel-plugin-angular2-at-annotation",
   "version": "0.0.1",
   "description": "An experimental babel transformer plugin for Angular 2 @ annotation",
+  "repository": "shuhei/babel-plugin-angular2-at-annotation",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "keywords": [
     "babel",
@@ -16,5 +17,9 @@
   "license": "ISC",
   "peerDependencies": {
     "babel-core": "^5.0.0"
+  },
+  "devDependencies": {
+    "babel-core": "^5.0.9",
+    "tape": "^4.0.0"
   }
 }
