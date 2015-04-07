@@ -27,10 +27,11 @@ After:
 ```js
 class HelloComponent {
 }
-
 HelloComponent.annotations = [new Component({
   selector: 'hello'
 }), new Template({
   inline: '<p>Hello, {{name}}!</p>'
 })];
 ```
+
+See [babel-angular2-app](https://github.com/shuhei/babel-angular2-app) for more complete example.
