@@ -8,16 +8,18 @@ module.exports = new Transformer('angular2-at-annotation', {
     var decorators = node.decorators;
     if (decorators) {
       node.decorators = null;
-      var array = t.arrayExpression(decorators.map(function (decorator) {
+      var annotations = t.arrayExpression(decorators.map(function (decorator) {
         var call = decorator.expression;
         return t.newExpression(call.callee, call.arguments);
       }));
-      var propertyName = t.memberExpression(classRef, t.identifier('annotations'), false);
-      var assignment = t.expressionStatement(t.assignmentExpression('=', propertyName, array));
+      var defineProperty = t.expressionStatement(t.callExpression(
+        file.addHelper('define-property'),
+        [classRef, t.literal('annotations'), annotations]
+      ));
       if (parent.type === 'ExportNamedDeclaration') {
-        this.parentPath.replaceWithMultiple([parent, assignment]);
+        this.parentPath.replaceWithMultiple([parent, defineProperty]);
       } else {
-        return [node, assignment];
+        return [node, defineProperty];
       }
     }
   }

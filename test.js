@@ -10,7 +10,8 @@ function test(fixtureName) {
   var expected = fs.readFileSync(path.resolve('fixtures', fixtureName, 'expected.js')).toString();
   var actual = babel.transform(fixture, {
     plugins: ['./index'],
-    optional: ['es7.decorators']
+    externalHelpers: true,
+    optional: ["es7.decorators"]
   }).code;
   assert.equal(actual + '\n', expected);
 }
