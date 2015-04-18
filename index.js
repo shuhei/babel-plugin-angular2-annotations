@@ -16,7 +16,7 @@ module.exports = new Transformer('angular2-at-annotation', {
         file.addHelper('define-property'),
         [classRef, t.literal('annotations'), annotations]
       ));
-      if (parent.type === 'ExportNamedDeclaration') {
+      if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
         this.parentPath.replaceWithMultiple([parent, defineProperty]);
       } else {
         return [node, defineProperty];
