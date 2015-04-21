@@ -1,8 +1,8 @@
 {
-  "name": "babel-plugin-angular2-at-annotation",
+  "name": "babel-plugin-angular2-annotations",
   "version": "0.1.0",
-  "description": "An experimental babel transformer plugin for Angular 2 @ annotation",
-  "repository": "shuhei/babel-plugin-angular2-at-annotation",
+  "description": "An experimental babel transformer plugin for Angular 2 annotations",
+  "repository": "shuhei/babel-plugin-angular2-annotation",
   "main": "index.js",
   "scripts": {
     "test": "node test.js"
@@ -11,7 +11,8 @@
     "babel",
     "angular",
     "angular2",
-    "annotation"
+    "annotation",
+    "decorator"
   ],
   "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
   "license": "ISC",
