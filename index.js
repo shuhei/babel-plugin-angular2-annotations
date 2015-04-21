@@ -39,16 +39,22 @@ function extractClassAnnotations(node, file) {
 function extractConstructorParameters(node, file) {
   var classRef = node.id;
   var classBody = node.body.body;
-  var annotations;
+  var parameters;
   classBody.forEach(function (bodyNode) {
     if (bodyNode.type === 'MethodDefinition' && bodyNode.kind === 'constructor') {
-      annotations = ignoreEmpty(parameterAnnotations(bodyNode.value.params));
+      parameters = ignoreEmpty(parameterAnnotations(bodyNode.value.params));
     }
   });
-  if (!annotations) {
+  if (!parameters) {
     return;
   }
-  return defineAnnotations(annotations, file, classRef);
+  var arrays = t.arrayExpression(parameters.map(function (item) {
+    return t.arrayExpression(item);
+  }));
+  return t.expressionStatement(t.callExpression(
+    file.addHelper('define-property'),
+    [classRef, t.literal('parameters'), arrays]
+  ));
 }
 
 function parameterAnnotations(params) {
@@ -74,19 +80,9 @@ function parameterAnnotations(params) {
   });
 }
 
-function ignoreEmpty(annotations) {
-  var allEmpty = annotations.reduce(function (acc, annotation) {
-    return acc && annotations.length === 0;
-  }, true);
-  return allEmpty ? null : annotations;
-}
-
-function defineAnnotations(annotations, file, classRef) {
-  var types = t.arrayExpression(annotations.map(function (item) {
-    return t.arrayExpression(item);
-  }));
-  return t.expressionStatement(t.callExpression(
-    file.addHelper('define-property'),
-    [classRef, t.literal('parameters'), types]
-  ));
+function ignoreEmpty(arrays) {
+  var allEmpty = arrays.every(function (array) {
+    return array.length === 0;
+  });
+  return allEmpty ? null : arrays;
 }

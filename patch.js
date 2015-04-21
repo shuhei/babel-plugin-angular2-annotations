@@ -26,7 +26,6 @@ babel.acorn.Parser.prototype.parseBindingList = function (close, allowEmpty, all
       // Start monkey patching
       if (decorators.length > 0) {
         left.decorators = decorators;
-        decorators = [];
       }
       // End monkey patching
       this.parseAssignableListItemTypes(left);
