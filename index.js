@@ -70,6 +70,7 @@ function parameterAnnotations(params) {
       item.push(t.identifier(annotation.id.name));
     }
     if (decorators) {
+      param.decorators = null;
       var news = decorators.map(function (decorator) {
         var call = decorator.expression;
         return t.newExpression(call.callee, call.arguments);
