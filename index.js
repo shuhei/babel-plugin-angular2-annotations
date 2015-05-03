@@ -4,6 +4,7 @@ require('./patch');
 var babel = require('babel-core');
 var t = babel.types;
 var Transformer = babel.Transformer;
+var helper = require('babel-rtts-helper')('assert');
 
 module.exports = new Transformer('angular2-at-annotation', {
   ClassDeclaration: function ClassDeclaration(node, parent, scope, file) {
@@ -65,11 +66,7 @@ function parameterAnnotations(params) {
     var decorators = param.decorators;
     var item = [];
     if (annotation) {
-      if (annotation.type !== 'GenericTypeAnnotation') {
-        throw new Error('Type annotation for constructor should be GenericTypeAnnotation: ' + annotation.type);
-      }
-      // TODO: Support annotation.typeParameters such as List<Foo>
-      item.push(t.identifier(annotation.id.name));
+      item.push(helper.typeForAnnotation(annotation));
     }
     if (decorators) {
       param.decorators = null;
