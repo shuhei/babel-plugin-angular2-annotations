@@ -1,3 +1,5 @@
+'use strict';
+
 var babel = require('babel-core');
 var tt = babel.acorn.tokTypes;
 
@@ -6,7 +8,11 @@ babel.acorn.Parser.prototype.parseBindingList = function (close, allowEmpty, all
   var elts = [],
       first = true;
   while (!this.eat(close)) {
-    if (first) first = false;else this.expect(tt.comma);
+    if (first) {
+      first = false;
+    } else {
+      this.expect(tt.comma);
+    }
     if (allowEmpty && this.type === tt.comma) {
       elts.push(null);
     } else if (allowTrailingComma && this.afterTrailingComma(close)) {

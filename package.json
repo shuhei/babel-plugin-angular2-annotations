@@ -5,7 +5,8 @@
   "repository": "shuhei/babel-plugin-angular2-annotation",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js",
+    "lint": "eslint ."
   },
   "keywords": [
     "babel",
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "babel-core": "^5.1.10",
+    "eslint": "^0.20.0",
     "tape": "^4.0.0"
   }
 }

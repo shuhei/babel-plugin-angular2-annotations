@@ -1,3 +1,5 @@
+'use strict';
+
 require('./patch');
 var babel = require('babel-core');
 var t = babel.types;
@@ -9,7 +11,7 @@ module.exports = new Transformer('angular2-at-annotation', {
     var defineParameters = extractConstructorParameters(node, file);
     var defines = [defineAnnotations, defineParameters].filter(Boolean);
     if (defines.length === 0) {
-      return;
+      return undefined;
     }
     if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
       this.parentPath.replaceWithMultiple([parent].concat(defines));
@@ -23,7 +25,7 @@ function extractClassAnnotations(node, file) {
   var classRef = node.id;
   var decorators = node.decorators;
   if (!decorators) {
-    return;
+    return undefined;
   }
   node.decorators = null;
   var annotations = t.arrayExpression(decorators.map(function (decorator) {
@@ -46,7 +48,7 @@ function extractConstructorParameters(node, file) {
     }
   });
   if (!parameters) {
-    return;
+    return undefined;
   }
   var arrays = t.arrayExpression(parameters.map(function (item) {
     return t.arrayExpression(item);

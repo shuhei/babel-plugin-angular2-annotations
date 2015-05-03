@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
@@ -11,7 +13,7 @@ function test(fixtureName) {
   var actual = babel.transform(fixture, {
     plugins: ['./index'],
     externalHelpers: true,
-    optional: ["es7.decorators"]
+    optional: ['es7.decorators']
   }).code;
   assert.equal(actual + '\n', expected);
 }
