@@ -8,36 +8,17 @@ var helper = require('babel-rtts-helper')('assert');
 
 module.exports = new Transformer('angular2-at-annotation', {
   ClassDeclaration: function ClassDeclaration(node, parent, scope, file) {
-    var defineAnnotations = extractClassAnnotations(node, file);
     var defineParameters = extractConstructorParameters(node, file);
-    var defines = [defineAnnotations, defineParameters].filter(Boolean);
-    if (defines.length === 0) {
+    if (!defineParameters) {
       return undefined;
     }
     if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
-      this.parentPath.replaceWithMultiple([parent].concat(defines));
+      this.parentPath.replaceWithMultiple([parent].concat(defineParameters));
     } else {
-      return [node].concat(defines);
+      return [node].concat(defineParameters);
     }
   }
 });
-
-function extractClassAnnotations(node, file) {
-  var classRef = node.id;
-  var decorators = node.decorators;
-  if (!decorators) {
-    return undefined;
-  }
-  node.decorators = null;
-  var annotations = t.arrayExpression(decorators.map(function (decorator) {
-    var call = decorator.expression;
-    return t.newExpression(call.callee, call.arguments);
-  }));
-  return t.expressionStatement(t.callExpression(
-    file.addHelper('define-property'),
-    [classRef, t.literal('annotations'), annotations]
-  ));
-}
 
 function extractConstructorParameters(node, file) {
   var classRef = node.id;

@@ -18,9 +18,6 @@ function test(fixtureName) {
   assert.equal(actual + '\n', expected);
 }
 
-test('annotations/normal-class');
-test('annotations/export-named-class');
-test('annotations/export-default-class');
 test('parameters/normal-class');
 test('parameters/export-named-class');
 test('parameters/export-default-class');

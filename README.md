@@ -10,7 +10,7 @@ Use with `--optional es7.decorators`.
 
 ## Supported annotations
 
-- @ annotation for class (`@Component()`)
+- ~~@ annotation for class (`@Component()`)~~  (As of angular 2 alpha.22, @ annotations are decorators)
 - Type annotation for constructor parameters (`constructor(foo: Foo, bar: Bar) {}`)
 - @ annotation for constructor parameters (`constructor(@Attriute('name') name, @Parent() parent) {}`)
 
@@ -19,12 +19,6 @@ Use with `--optional es7.decorators`.
 Before:
 
 ```js
-@Component({
-  selector: 'hello'
-})
-@Template({
-  inline: '<p>Hello, {{name}}!</p>'
-})
 class HelloComponent {
   constructor(@Something() foo: Foo, bar: Bar) {
   }
@@ -36,13 +30,6 @@ After:
 ```js
 class HelloComponent {
 }
-Object.defineProperty(HelloComponent, 'annotations', { get: function () {
-  return [new Component({
-    selector: 'hello'
-  }), new Template({
-    inline: '<p>Hello, {{name}}!</p>'
-  })];
-}});
 Object.defineProperty(HelloComponent, 'parameters', { get: function () {
   return [[Foo, new Something()], [Bar]];
 }});

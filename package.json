@@ -22,8 +22,7 @@
   },
   "devDependencies": {
     "babel-core": "^5.1.10",
-    "eslint": "^0.20.0",
-    "tape": "^4.0.0"
+    "eslint": "^0.20.0"
   },
   "dependencies": {
     "babel-rtts-helper": "^0.1.0"
