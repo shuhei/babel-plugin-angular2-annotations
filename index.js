@@ -6,64 +6,78 @@ var t = babel.types;
 var Transformer = babel.Transformer;
 var helper = require('babel-rtts-helper')('assert');
 
-module.exports = new Transformer('angular2-at-annotation', {
-  ClassDeclaration: function ClassDeclaration(node, parent, scope, file) {
-    var defineParameters = extractConstructorParameters(node, file);
-    if (!defineParameters) {
+module.exports = new Transformer('angular2-annotations', {
+  ClassDeclaration: function ClassDeclaration(node, parent) {
+    var classRef = node.id;
+    var classBody = node.body.body;
+
+    // Create additional statements for parameter decorators and types.
+    var decorators;
+    var types;
+    classBody.forEach(function (bodyNode) {
+      if (bodyNode.type === 'MethodDefinition' && bodyNode.kind === 'constructor') {
+        decorators = parameterDecorators(bodyNode.value.params, classRef);
+        types = parameterTypes(bodyNode.value.params, classRef);
+      }
+    });
+    var additionalStatements = [].concat(decorators, types).filter(Boolean);
+
+    // If not found, do nothing.
+    if (additionalStatements.length === 0) {
       return undefined;
     }
+
+    // Append additional statements to program.
     if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
-      this.parentPath.replaceWithMultiple([parent].concat(defineParameters));
+      // The class declaration is wrapped by an export declaration.
+      this.parentPath.replaceWithMultiple([parent].concat(additionalStatements));
     } else {
-      return [node].concat(defineParameters);
+      return [node].concat(additionalStatements);
     }
   }
 });
 
-function extractConstructorParameters(node, file) {
-  var classRef = node.id;
-  var classBody = node.body.body;
-  var parameters;
-  classBody.forEach(function (bodyNode) {
-    if (bodyNode.type === 'MethodDefinition' && bodyNode.kind === 'constructor') {
-      parameters = ignoreEmpty(parameterAnnotations(bodyNode.value.params));
+// Returns an array of parameter decorator call statements for a class.
+function parameterDecorators(params, classRef) {
+  var decoratorLists = params.map(function (param, i) {
+    var decorators = param.decorators;
+    if (!decorators) {
+      return [];
     }
+    // Delete parameter decorators because they are invalid in vanilla babel.
+    // They might be just ignored though.
+    param.decorators = null;
+
+    return decorators.map(function (decorator) {
+      var call = decorator.expression;
+      var args = [classRef, t.identifier('null'), t.identifier(i)];
+      return t.expressionStatement(t.callExpression(call, args));
+    });
   });
-  if (!parameters) {
-    return undefined;
+  // Flatten.
+  return Array.prototype.concat.apply([], decoratorLists);
+}
+
+// Returns an array of define 'parameters' metadata statements for a class.
+// The array may contain zero or one statements.
+function parameterTypes(params, classRef) {
+  var types = params.map(function (param) {
+    var annotation = param.typeAnnotation && param.typeAnnotation.typeAnnotation;
+    if (!annotation) {
+      return null;
+    }
+    return helper.typeForAnnotation(annotation);
+  });
+  if (!types.some(Boolean)) {
+    return [];
   }
-  var arrays = t.arrayExpression(parameters.map(function (item) {
-    return t.arrayExpression(item);
-  }));
+  return [defineMetadata('design:paramtypes', t.arrayExpression(types), classRef)];
+}
+
+// Returns an AST for define metadata statement.
+function defineMetadata(key, value, target) {
   return t.expressionStatement(t.callExpression(
     t.memberExpression(t.identifier('Reflect'), t.identifier('defineMetadata')),
-    [t.literal('parameters'), arrays, classRef]
+    [t.literal(key), value, target]
   ));
-}
-
-function parameterAnnotations(params) {
-  return params.map(function (param) {
-    var annotation = param.typeAnnotation && param.typeAnnotation.typeAnnotation;
-    var decorators = param.decorators;
-    var item = [];
-    if (annotation) {
-      item.push(helper.typeForAnnotation(annotation));
-    }
-    if (decorators) {
-      param.decorators = null;
-      var news = decorators.map(function (decorator) {
-        var call = decorator.expression;
-        return t.newExpression(call.callee, call.arguments);
-      });
-      item = item.concat(news);
-    }
-    return item;
-  });
-}
-
-function ignoreEmpty(arrays) {
-  var allEmpty = arrays.every(function (array) {
-    return array.length === 0;
-  });
-  return allEmpty ? null : arrays;
 }

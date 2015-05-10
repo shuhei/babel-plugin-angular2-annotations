@@ -8,11 +8,13 @@ An **experimental** babel transformer plugin for Angular 2 annotations.
 
 Use with `--optional es7.decorators`.
 
+Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
+
 ## Supported annotations
 
-- ~~@ annotation for class (`@Component()`)~~  (As of angular 2 alpha.22, @ annotations are decorators)
-- Type annotation for constructor parameters (`constructor(foo: Foo, bar: Bar) {}`)
-- @ annotation for constructor parameters (`constructor(@Attriute('name') name, @Parent() parent) {}`)
+- ~~@ annotations for class (`@Component()`)~~  (As of angular 2 alpha.22, @ annotations are decorators)
+- Type annotations for constructor parameters (`constructor(foo: Foo, bar: Bar) {}`)
+- Decorators for constructor parameters (`constructor(@Attriute('name') name, @Parent() parent) {}`)
 
 ## Example
 
@@ -20,7 +22,7 @@ Before:
 
 ```js
 class HelloComponent {
-  constructor(@Something() foo: Foo, bar: Bar) {
+  constructor(@Something({ hello: 'world' }) foo: Foo, bar: Bar) {
   }
 }
 ```
@@ -30,9 +32,9 @@ After:
 ```js
 class HelloComponent {
 }
-Object.defineProperty(HelloComponent, 'parameters', { get: function () {
-  return [[Foo, new Something()], [Bar]];
-}});
+
+Something({ hello: 'world' })(HelloComponent, null, 0);
+Reflect.defineMetadata('design:paramtypes', [Foo, Bar]);
 ```
 
 See [babel-angular2-app](https://github.com/shuhei/babel-angular2-app) for more complete example.
