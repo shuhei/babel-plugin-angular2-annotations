@@ -36,8 +36,8 @@ function extractConstructorParameters(node, file) {
     return t.arrayExpression(item);
   }));
   return t.expressionStatement(t.callExpression(
-    file.addHelper('define-property'),
-    [classRef, t.literal('parameters'), arrays]
+    t.memberExpression(t.identifier('Reflect'), t.identifier('defineMetadata')),
+    [t.literal('parameters'), arrays, classRef]
   ));
 }
 
