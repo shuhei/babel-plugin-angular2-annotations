@@ -17,14 +17,11 @@
   ],
   "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
   "license": "ISC",
-  "peerDependencies": {
-    "babel-core": "^5.1.10"
-  },
   "devDependencies": {
-    "babel-core": "^5.1.10",
-    "eslint": "^0.20.0"
+    "babel-core": "^5.4.5",
+    "eslint": "^0.21.2"
   },
   "dependencies": {
-    "babel-rtts-helper": "^0.1.0"
+    "babel-rtts-helper": "^0.2.0"
   }
 }
