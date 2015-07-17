@@ -1,5 +1,7 @@
 {
+  "parser": "babel-eslint",
   "env": {
+    "browser": false,
     "node": true
   },
   "rules": {

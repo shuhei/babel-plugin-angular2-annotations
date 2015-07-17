@@ -1,41 +1,37 @@
 'use strict';
+var rttsHelper = require('babel-rtts-helper');
 
-var patch = require('./patch');
-var createHelper = require('babel-rtts-helper');
+export default function ({ Plugin, types: t }) {
+  var helper = rttsHelper({types: t}, 'assert');
+  return new Plugin("angular2-annotations", {
+    visitor: {
+      ClassDeclaration: function ClassDeclaration(node, parent) {
+        var classRef = node.id;
+        var classBody = node.body.body;
 
-module.exports = function (babel) {
-  patch(babel);
-  var t = babel.types;
-  var Transformer = babel.Transformer;
-  var helper = createHelper(babel, 'assert');
+        // Create additional statements for parameter decorators and types.
+        var decorators;
+        var types;
+        classBody.forEach(function (bodyNode) {
+          if (bodyNode.type === 'MethodDefinition' && bodyNode.kind === 'constructor') {
+            decorators = parameterDecorators(bodyNode.value.params, classRef);
+            types = parameterTypes(bodyNode.value.params, classRef);
+          }
+        });
+        var additionalStatements = [].concat(decorators, types).filter(Boolean);
 
-  return new Transformer('angular2-annotations', {
-    ClassDeclaration: function ClassDeclaration(node, parent) {
-      var classRef = node.id;
-      var classBody = node.body.body;
-
-      // Create additional statements for parameter decorators and types.
-      var decorators;
-      var types;
-      classBody.forEach(function (bodyNode) {
-        if (bodyNode.type === 'MethodDefinition' && bodyNode.kind === 'constructor') {
-          decorators = parameterDecorators(bodyNode.value.params, classRef);
-          types = parameterTypes(bodyNode.value.params, classRef);
+        // If not found, do nothing.
+        if (additionalStatements.length === 0) {
+          return undefined;
         }
-      });
-      var additionalStatements = [].concat(decorators, types).filter(Boolean);
 
-      // If not found, do nothing.
-      if (additionalStatements.length === 0) {
-        return undefined;
-      }
-
-      // Append additional statements to program.
-      if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
-        // The class declaration is wrapped by an export declaration.
-        this.parentPath.replaceWithMultiple([parent].concat(additionalStatements));
-      } else {
-        return [node].concat(additionalStatements);
+        // Append additional statements to program.
+        if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
+          // The class declaration is wrapped by an export declaration.
+          this.parentPath.replaceWithMultiple([parent].concat(additionalStatements));
+        } else {
+          return [node].concat(additionalStatements);
+        }
       }
     }
   });
@@ -84,4 +80,5 @@ module.exports = function (babel) {
       [t.literal(key), value, target]
     ));
   }
-};
+
+}
