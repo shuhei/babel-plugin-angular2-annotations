@@ -10,6 +10,14 @@ Use with `--optional es7.decorators`.
 
 Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
 
+## Install
+
+Along with `babel-plugin-angular2-annotations`, `babylon`, the parser of `babel`, should be installed **at the top level**. This is an ugly hack but inevitable to support parameter decorators, which is not currently supported by `babel`, by moneky-patching.
+
+```
+npm install --save-dev babylon babel-plugin-angular2-annotations
+```
+
 ## Supported annotations
 
 - ~~@ annotations for class (`@Component()`)~~  (As of angular 2 alpha.22, @ annotations are decorators)

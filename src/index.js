@@ -1,5 +1,7 @@
-'use strict';
 import rttsHelper from 'babel-rtts-helper';
+import patch from './patch';
+
+patch();
 
 export default function ({ Plugin, types: t }) {
   const helper = rttsHelper({ types: t }, 'assert');

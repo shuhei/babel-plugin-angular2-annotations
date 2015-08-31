@@ -22,11 +22,12 @@
   "license": "ISC",
   "devDependencies": {
     "babel": "^5.8.23",
-    "babel-core": "^5.7.4",
+    "babel-core": "^5.8.23",
     "babel-eslint": "^4.1.0",
     "eslint": "^0.21.2"
   },
   "dependencies": {
+    "babylon": "^5.8.23",
     "babel-rtts-helper": "^0.2.0"
   }
 }
