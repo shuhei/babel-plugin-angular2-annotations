@@ -3,13 +3,16 @@
   "version": "1.1.0",
   "description": "An experimental babel transformer plugin for Angular 2 annotations",
   "repository": "shuhei/babel-plugin-angular2-annotation",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "node test.js",
+    "build": "babel-plugin build",
+    "push": "babel-plugin publish",
+    "test": "node test",
     "lint": "eslint ."
   },
   "keywords": [
     "babel",
+    "babel-plugin",
     "angular",
     "angular2",
     "annotation",
@@ -18,8 +21,8 @@
   "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "babel-core": "^5.4.5",
-    "eslint": "^0.21.2"
+    "eslint": "^0.21.2",
+    "babel-core": "^5.7.4"
   },
   "dependencies": {
     "babel-rtts-helper": "^0.2.0"
