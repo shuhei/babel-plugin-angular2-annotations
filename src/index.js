@@ -1,24 +1,25 @@
 'use strict';
-var rttsHelper = require('babel-rtts-helper');
+import rttsHelper from 'babel-rtts-helper';
 
 export default function ({ Plugin, types: t }) {
-  var helper = rttsHelper({types: t}, 'assert');
-  return new Plugin("angular2-annotations", {
+  const helper = rttsHelper({ types: t }, 'assert');
+
+  return new Plugin('angular2-annotations', {
     visitor: {
-      ClassDeclaration: function ClassDeclaration(node, parent) {
-        var classRef = node.id;
-        var classBody = node.body.body;
+      ClassDeclaration(node, parent) {
+        const classRef = node.id;
+        const classBody = node.body.body;
 
         // Create additional statements for parameter decorators and types.
-        var decorators;
-        var types;
-        classBody.forEach(function (bodyNode) {
+        let decorators;
+        let types;
+        classBody.forEach((bodyNode) => {
           if (bodyNode.type === 'MethodDefinition' && bodyNode.kind === 'constructor') {
             decorators = parameterDecorators(bodyNode.value.params, classRef);
             types = parameterTypes(bodyNode.value.params, classRef);
           }
         });
-        var additionalStatements = [].concat(decorators, types).filter(Boolean);
+        const additionalStatements = [].concat(decorators, types).filter(Boolean);
 
         // If not found, do nothing.
         if (additionalStatements.length === 0) {
@@ -38,8 +39,8 @@ export default function ({ Plugin, types: t }) {
 
   // Returns an array of parameter decorator call statements for a class.
   function parameterDecorators(params, classRef) {
-    var decoratorLists = params.map(function (param, i) {
-      var decorators = param.decorators;
+    const decoratorLists = params.map((param, i) => {
+      const decorators = param.decorators;
       if (!decorators) {
         return [];
       }
@@ -47,9 +48,9 @@ export default function ({ Plugin, types: t }) {
       // They might be just ignored though.
       param.decorators = null;
 
-      return decorators.map(function (decorator) {
-        var call = decorator.expression;
-        var args = [classRef, t.identifier('null'), t.identifier(i)];
+      return decorators.map((decorator) => {
+        const call = decorator.expression;
+        const args = [classRef, t.identifier('null'), t.identifier(i)];
         return t.expressionStatement(t.callExpression(call, args));
       });
     });
@@ -60,8 +61,8 @@ export default function ({ Plugin, types: t }) {
   // Returns an array of define 'parameters' metadata statements for a class.
   // The array may contain zero or one statements.
   function parameterTypes(params, classRef) {
-    var types = params.map(function (param) {
-      var annotation = param.typeAnnotation && param.typeAnnotation.typeAnnotation;
+    const types = params.map((param) => {
+      const annotation = param.typeAnnotation && param.typeAnnotation.typeAnnotation;
       if (!annotation) {
         return null;
       }
@@ -80,5 +81,4 @@ export default function ({ Plugin, types: t }) {
       [t.literal(key), value, target]
     ));
   }
-
 }
