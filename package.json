@@ -21,8 +21,10 @@
   "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "^0.21.2",
-    "babel-core": "^5.7.4"
+    "babel": "^5.8.23",
+    "babel-core": "^5.7.4",
+    "babel-eslint": "^4.1.0",
+    "eslint": "^0.21.2"
   },
   "dependencies": {
     "babel-rtts-helper": "^0.2.0"

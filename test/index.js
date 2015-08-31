@@ -6,12 +6,14 @@ var path = require('path');
 
 var babel = require('babel-core');
 
+require('babel-core/register');
+
 function test(fixtureName) {
   console.log('-', fixtureName);
   var fixture = fs.readFileSync(path.resolve(__dirname, 'fixtures', fixtureName, 'fixture.js')).toString();
   var expected = fs.readFileSync(path.resolve(__dirname, 'fixtures', fixtureName, 'expected.js')).toString();
   var actual = babel.transform(fixture, {
-    plugins: ['./../lib'],
+    plugins: ['./../src'],
     externalHelpers: true,
     optional: ['es7.decorators']
   }).code;
