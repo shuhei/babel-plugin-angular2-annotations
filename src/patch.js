@@ -3,35 +3,39 @@ export default function patch() {
   let tt;
   try {
     Parser = require('babylon/lib/parser').default;
-    tt = require('babylon/lib/tokenizer/types');
+    tt = require('babylon/lib/tokenizer/types').types;
   } catch(e) {
     console.error('Install `babylon` as a top-level package.');
     throw e;
   }
 
-  /* eslint-disable */
-  // HACK: Monkey patching to parse parameter decorators. Based on the compiled output of babel-core 5.8.23.
-  function parseBindingList(close, allowEmpty, allowTrailingComma) {
-    var elts = [],
-        first = true;
+  // HACK: Monkey patching to parse parameter decorators.
+  // Based on the compiled output of babel-core 6.0.14.
+  Parser.prototype.parseBindingList = function (close, allowEmpty, allowTrailingComma) {
+    let elts = [];
+    let first = true;
     while (!this.eat(close)) {
-      if (first) first = false;else this.expect(tt.types.comma);
-      if (allowEmpty && this.match(tt.types.comma)) {
+      if (first) {
+        first = false;
+      } else {
+        this.expect(tt.comma);
+      }
+      if (allowEmpty && this.match(tt.comma)) {
         elts.push(null);
       } else if (allowTrailingComma && this.eat(close)) {
         break;
-      } else if (this.match(tt.types.ellipsis)) {
+      } else if (this.match(tt.ellipsis)) {
         elts.push(this.parseAssignableListItemTypes(this.parseRest()));
         this.expect(close);
         break;
       } else {
         // Start monkey patching
         const decorators = [];
-        while (this.match(tt.types.at)) {
+        while (this.match(tt.at)) {
           decorators.push(this.parseDecorator());
         }
         // End monkey patching
-        var left = this.parseMaybeDefault();
+        let left = this.parseMaybeDefault();
         // Start monkey patching
         if (decorators.length > 0) {
           left.decorators = decorators;
@@ -43,7 +47,4 @@ export default function patch() {
     }
     return elts;
   };
-  /* eslint-enable */
-
-  Parser.prototype.parseBindingList = parseBindingList;
 }

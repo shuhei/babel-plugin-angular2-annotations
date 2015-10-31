@@ -4,23 +4,49 @@
 
 # babel-plugin-angular2-annotations
 
-An **experimental** babel transformer plugin for Angular 2 annotations.
+A babel transformer plugin for Angular 2 annotations.
 
-Use with `--optional es7.decorators`.
+Use `babel-plugin-transform-decorators-legacy` to support Babel 5 decorators.
 
 Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
 
 ## Install
 
-Along with `babel-plugin-angular2-annotations`, `babylon`, the parser of `babel`, should be installed **at the top level**. This is an ugly hack but inevitable to support parameter decorators, which is not currently supported by `babel`, by moneky-patching.
+```sh
+npm install --save-dev babel-plugin-angular2-annotations
+```
+
+```sh
+npm install --save-dev babel-plugin-transform-decorators-legacy babel-plugin-transform-flow-strip-types
+```
+
+.babelrc
+
+```json
+{
+  "plugins": [
+    "angular2-annotation",
+    "transform-decorators-legacy",
+    "transform-flow-strip-types"
+  ]
+}
+```
+
+### npm 3
+
+That's it.
+
+### npm 2
+
+To monkey-patch `babylon`, the parser of `babel`, should be installed **at the top level**. This is an ugly hack but inevitable to support parameter decorators, which is not currently supported by `babel`, by monkey-patching.
 
 ```
-npm install --save-dev babylon babel-plugin-angular2-annotations
+npm install --save-dev babylon
 ```
 
 ## Supported annotations
 
-- ~~@ annotations for class (`@Component()`)~~  (As of angular 2 alpha.22, @ annotations are decorators)
+- Class decorators (`@Component()`): works without this plugin
 - Type annotations for constructor parameters (`constructor(foo: Foo, bar: Bar) {}`)
 - Decorators for constructor parameters (`constructor(@Attriute('name') name, @Parent() parent) {}`)
 

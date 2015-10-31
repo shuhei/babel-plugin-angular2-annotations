@@ -3,12 +3,13 @@ import patch from './patch';
 
 patch();
 
-export default function ({ Plugin, types: t }) {
+export default function ({ types: t }) {
   const helper = rttsHelper({ types: t }, 'assert');
 
-  return new Plugin('angular2-annotations', {
+  return {
     visitor: {
-      ClassDeclaration(node, parent) {
+      ClassDeclaration(path, pass) {
+        const node = path.node;
         const classRef = node.id;
         const classBody = node.body.body;
 
@@ -16,12 +17,12 @@ export default function ({ Plugin, types: t }) {
         let decorators;
         let types;
         classBody.forEach((bodyNode) => {
-          if (bodyNode.type === 'MethodDefinition' && bodyNode.kind === 'constructor') {
-            decorators = parameterDecorators(bodyNode.value.params, classRef);
-            types = parameterTypes(bodyNode.value.params, classRef);
+          if (bodyNode.type === 'ClassMethod' && bodyNode.kind === 'constructor') {
+            decorators = parameterDecorators(bodyNode.params, classRef);
+            types = parameterTypes(bodyNode.params, classRef);
           }
         });
-        const additionalStatements = [].concat(decorators, types).filter(Boolean);
+        const additionalStatements = [...decorators, ...types].filter(Boolean);
 
         // If not found, do nothing.
         if (additionalStatements.length === 0) {
@@ -29,15 +30,16 @@ export default function ({ Plugin, types: t }) {
         }
 
         // Append additional statements to program.
+        const parent = path.parent;
         if (parent.type === 'ExportNamedDeclaration' || parent.type === 'ExportDefaultDeclaration') {
           // The class declaration is wrapped by an export declaration.
-          this.parentPath.replaceWithMultiple([parent].concat(additionalStatements));
+          path.parentPath.insertAfter(additionalStatements);
         } else {
-          return [node].concat(additionalStatements);
+          path.insertAfter(additionalStatements);
         }
       }
     }
-  });
+  };
 
   // Returns an array of parameter decorator call statements for a class.
   function parameterDecorators(params, classRef) {
@@ -47,7 +49,7 @@ export default function ({ Plugin, types: t }) {
         return [];
       }
       // Delete parameter decorators because they are invalid in vanilla babel.
-      // They might be just ignored though.
+      // They might be just ignored in generator though.
       param.decorators = null;
 
       return decorators.map((decorator) => {
@@ -80,7 +82,7 @@ export default function ({ Plugin, types: t }) {
   function defineMetadata(key, value, target) {
     return t.expressionStatement(t.callExpression(
       t.memberExpression(t.identifier('Reflect'), t.identifier('defineMetadata')),
-      [t.literal(key), value, target]
+      [t.stringLiteral(key), value, target]
     ));
   }
 }

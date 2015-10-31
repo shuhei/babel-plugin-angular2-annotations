@@ -6,21 +6,35 @@ var path = require('path');
 
 var babel = require('babel-core');
 
-require('babel-core/register');
+var testing = require('./testing');
 
-function test(fixtureName) {
-  console.log('-', fixtureName);
+require('babel-core/register')({
+  presets: ['es2015']
+});
+
+var fixtures = [
+  'no-annotation',
+  'normal-class',
+  'export-named-class',
+  'export-default-class'
+];
+var results = fixtures.map(function (fixture) {
+  return testing.test(fixture, testTransform.bind(null, fixture));
+});
+testing.printResult(results);
+
+function testTransform(fixtureName) {
   var fixture = fs.readFileSync(path.resolve(__dirname, 'fixtures', fixtureName, 'fixture.js')).toString();
   var expected = fs.readFileSync(path.resolve(__dirname, 'fixtures', fixtureName, 'expected.js')).toString();
   var actual = babel.transform(fixture, {
-    plugins: ['./../src'],
-    externalHelpers: true,
-    optional: ['es7.decorators']
+    plugins: [
+      './../src',
+      'external-helpers-2',
+      'transform-decorators-legacy',
+      'transform-flow-strip-types'
+    ],
+    presets: 'es2015'
   }).code;
+
   assert.equal(actual + '\n', expected);
 }
-
-test('no-annotation');
-test('normal-class');
-test('export-named-class');
-test('export-default-class');
