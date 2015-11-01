@@ -1,4 +1,4 @@
-[![build status](https://img.shields.io/travis/shuhei/babel-plugin-angular2-annotations.svg)](https://travis-ci.org/shuhei/babel-plugin-angular2-annotations)
+[![build status](https://img.shields.io/travis/shuhei/babel-plugin-angular2-annotations/master.svg)](https://travis-ci.org/shuhei/babel-plugin-angular2-annotations)
 [![npm version](https://img.shields.io/npm/v/babel-plugin-angular2-annotations.svg)](https://www.npmjs.org/package/babel-plugin-angular2-annotations)
 [![npm downloads](https://img.shields.io/npm/dm/babel-plugin-angular2-annotations.svg)](https://www.npmjs.org/package/babel-plugin-angular2-annotations)
 
