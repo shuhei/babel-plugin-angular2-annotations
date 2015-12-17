@@ -10,7 +10,7 @@
     "clean": "rm -rf lib",
     "lint": "eslint .",
     "prepublish": "npm run build",
-    "postinstall": "npm run build",
+    "postinstall": "npm run build"
   },
   "keywords": [
     "es6",
