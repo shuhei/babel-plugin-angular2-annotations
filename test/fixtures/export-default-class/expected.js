@@ -1,15 +1,14 @@
 "use strict";
 
+var _dec, _class;
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var HelloComponent = function HelloComponent(foo, bar) {
+var HelloComponent = (_dec = Component({ selector: "hello" }), _dec(_class = function HelloComponent(foo, bar) {
   babelHelpers.classCallCheck(this, HelloComponent);
-};
-
-exports["default"] = HelloComponent;
+}) || _class);
 Yes({ key: "value" })(HelloComponent, null, 0);
 No()(HelloComponent, null, 0);
 Reflect.defineMetadata("design:paramtypes", [Foo, Bar], HelloComponent);
-module.exports = exports["default"];
+exports.default = HelloComponent;
