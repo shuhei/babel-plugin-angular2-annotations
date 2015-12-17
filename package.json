@@ -8,7 +8,9 @@
     "build": "babel src --out-dir lib --copy-files --presets es2015",
     "test": "node test",
     "clean": "rm -rf lib",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepublish": "npm run build",
+    "postinstall": "npm run build",
   },
   "keywords": [
     "es6",
