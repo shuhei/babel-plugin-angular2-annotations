@@ -9,8 +9,7 @@
     "test": "node test",
     "clean": "rm -rf lib",
     "lint": "eslint .",
-    "prepublish": "npm run clean && npm run build",
-    "postinstall": "npm run clean && npm run build"
+    "prepublish": "npm run clean && npm run build"
   },
   "keywords": [
     "es6",
