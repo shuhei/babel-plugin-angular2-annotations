@@ -14,8 +14,8 @@ export default function ({ types: t }) {
         const classBody = node.body.body;
 
         // Create additional statements for parameter decorators and types.
-        let decorators;
-        let types;
+        let decorators = [];
+        let types = [];
         classBody.forEach((bodyNode) => {
           if (bodyNode.type === 'ClassMethod' && bodyNode.kind === 'constructor') {
             decorators = parameterDecorators(bodyNode.params, classRef);

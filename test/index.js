@@ -15,6 +15,7 @@ require('babel-core/register')({
 var fixtures = [
   'no-annotation',
   'normal-class',
+  'no-constructor',
   'export-named-class',
   'export-default-class'
 ];
