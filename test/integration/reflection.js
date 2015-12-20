@@ -20,8 +20,7 @@ test('Class decorator', (t) => {
   class HelloWorld {
   }
 
-  t.deepEqual(Reflect.getMetadataKeys(HelloWorld), ['annotations']);
-  t.deepEqual(Reflect.getMetadata('annotations', HelloWorld), [
+  t.deepEqual(reflector.annotations(HelloWorld), [
     new ComponentMetadata({ selector: 'hello-world' })
   ]);
 
@@ -34,8 +33,7 @@ test('Class property decorator', (t) => {
     @Output('g') greetings = new EventEmitter();
   }
 
-  t.deepEqual(Reflect.getMetadataKeys(HelloWorld), ['propMetadata']);
-  t.deepEqual(Reflect.getMetadata('propMetadata', HelloWorld), {
+  t.deepEqual(reflector.propMetadata(HelloWorld), {
     name: [new InputMetadata()],
     greetings: [new OutputMetadata('g')]
   });
@@ -51,8 +49,7 @@ test('Constructor parameter decorator', (t) => {
     }
   }
 
-  t.deepEqual(Reflect.getMetadataKeys(HelloWorld), ['parameters']);
-  t.deepEqual(Reflect.getMetadata('parameters', HelloWorld), [
+  t.deepEqual(reflector.parameters(HelloWorld), [
     [new AttributeMetadata('g')],
     [new AttributeMetadata()]
   ]);
@@ -69,11 +66,10 @@ test('Constructor parameter type annotation', (t) => {
     }
   }
 
-  t.deepEqual(Reflect.getMetadataKeys(HelloWorld), ['design:paramtypes']);
-  t.deepEqual(Reflect.getMetadata('design:paramtypes', HelloWorld), [
-    Greeter,
-    ,
-    Greeter
+  t.deepEqual(reflector.parameters(HelloWorld), [
+    [Greeter],
+    [undefined],
+    [Greeter]
   ]);
 
   t.end();
@@ -94,28 +90,18 @@ test('All in one', (t) => {
     }
   }
 
-  t.deepEqual(Reflect.getMetadataKeys(HelloWorld), [
-    'propMetadata',
-    'annotations',
-    'parameters',
-    'design:paramtypes'
-  ]);
-  t.deepEqual(Reflect.getMetadata('propMetadata', HelloWorld), {
+  t.deepEqual(reflector.propMetadata(HelloWorld), {
     foo: [new InputMetadata()],
     greetings: [new OutputMetadata('g')]
   }, 'propMetadata');
-  t.deepEqual(Reflect.getMetadata('annotations', HelloWorld), [
+  t.deepEqual(reflector.annotations(HelloWorld), [
     new ComponentMetadata({ selector: 'hello-world' })
   ], 'annotations');
-  t.deepEqual(Reflect.getMetadata('parameters', HelloWorld), [
-    null,
-    [new AttributeMetadata('n')],
+  t.deepEqual(reflector.parameters(HelloWorld), [
+    [Greeter],
+    [undefined, new AttributeMetadata('n')],
+    [Greeter]
   ], 'parameters');
-  t.deepEqual(Reflect.getMetadata('design:paramtypes', HelloWorld), [
-    Greeter,
-    ,
-    Greeter
-  ], 'design:paramtypes');
 
   t.end();
 });

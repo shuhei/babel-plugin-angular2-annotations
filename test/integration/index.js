@@ -8,4 +8,4 @@ require('babel-core/register')({
   presets: ['es2015']
 });
 
-require('./angular2');
+require('./reflection');
