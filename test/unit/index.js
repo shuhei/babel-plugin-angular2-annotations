@@ -34,7 +34,7 @@ function testTransform(fixtureName) {
       'transform-decorators-legacy',
       'transform-flow-strip-types'
     ],
-    presets: 'es2015'
+    presets: ['es2015']
   }).code;
 
   assert.equal(actual + '\n', expected);

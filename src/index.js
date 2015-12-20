@@ -54,7 +54,7 @@ export default function ({ types: t }) {
 
       return decorators.map((decorator) => {
         const call = decorator.expression;
-        const args = [classRef, t.identifier('null'), t.identifier(i)];
+        const args = [classRef, t.identifier('null'), t.identifier(i.toString())];
         return t.expressionStatement(t.callExpression(call, args));
       });
     });
