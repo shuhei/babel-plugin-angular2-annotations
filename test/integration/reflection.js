@@ -25,7 +25,7 @@ import {
 } from 'angular2/core';
 
 describe('reflection', () => {
-  it('Class decorator', () => {
+  it('supports class decorator', () => {
     @Component({
       selector: 'hello-world'
     })
@@ -37,7 +37,7 @@ describe('reflection', () => {
     ]);
   });
 
-  it('Class property decorator', () => {
+  it('supports class property decorator', () => {
     class HelloWorld {
       @Input() name;
       @Output('g') greetings = new EventEmitter();
@@ -49,7 +49,7 @@ describe('reflection', () => {
     });
   });
 
-  it('Constructor parameter decorator', () => {
+  it('supports constructor parameter decorator', () => {
     class HelloWorld {
       constructor(@Attribute('g') greeting, @Attribute() name) {
         this.greeting = greeting;
@@ -63,7 +63,7 @@ describe('reflection', () => {
     ]);
   });
 
-  it('Constructor parameter type annotation', () => {
+  it('supports constructor parameter type annotation', () => {
     class Greeter {
     }
 
@@ -79,7 +79,7 @@ describe('reflection', () => {
     ]);
   });
 
-  it('All in one', () => {
+  it('supports all-in-one component', () => {
     class Greeter {
     }
 
