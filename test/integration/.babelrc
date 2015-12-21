@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    "../lib/index.js",
+    "transform-decorators-legacy",
+    "transform-class-properties",
+    "transform-flow-strip-types"
+  ],
+  "presets": ["es2015"]
+}

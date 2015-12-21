@@ -20,6 +20,10 @@ export default function ({ types: t }) {
           if (bodyNode.type === 'ClassMethod' && bodyNode.kind === 'constructor') {
             decorators = parameterDecorators(bodyNode.params, classRef);
             types = parameterTypes(bodyNode.params, classRef);
+          } else if (bodyNode.type === 'ClassProperty' && bodyNode.value === null && !bodyNode.static) {
+            // Handle class property without initializer.
+            // https://github.com/jeffmo/es-class-fields-and-static-properties
+            bodyNode.value = t.memberExpression(t.thisExpression(), bodyNode.key);
           }
         });
         const additionalStatements = [...decorators, ...types].filter(Boolean);
@@ -54,7 +58,7 @@ export default function ({ types: t }) {
 
       return decorators.map((decorator) => {
         const call = decorator.expression;
-        const args = [classRef, t.identifier('null'), t.identifier(i)];
+        const args = [classRef, t.identifier('null'), t.identifier(i.toString())];
         return t.expressionStatement(t.callExpression(call, args));
       });
     });
