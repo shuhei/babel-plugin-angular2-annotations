@@ -7,7 +7,7 @@
   "scripts": {
     "build": "babel src --out-dir lib --copy-files",
     "test:unit": "node test/unit",
-    "test:integration": "karma start --single-run",
+    "test:integration": "npm run build && karma start --single-run",
     "test": "npm run test:unit && npm run test:integration",
     "clean": "rm -rf lib",
     "lint": "eslint .",
@@ -46,6 +46,7 @@
     "karma-browserify": "^4.4.2",
     "karma-jasmine": "^0.3.6",
     "karma-phantomjs-launcher": "^0.2.1",
+    "karma-source-map-support": "^1.1.0",
     "phantomjs": "^1.9.19",
     "reflect-metadata": "^0.1.2",
     "rxjs": "^5.0.0-beta.0",
