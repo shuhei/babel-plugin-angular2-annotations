@@ -17,7 +17,7 @@ npm install --save-dev babel-plugin-angular2-annotations
 ```
 
 ```sh
-npm install --save-dev babel-plugin-transform-decorators-legacy babel-plugin-transform-flow-strip-types
+npm install --save-dev babel-plugin-transform-decorators-legacy babel-plugin-transform-class-properties babel-plugin-transform-flow-strip-types babel-preset-es2015
 ```
 
 .babelrc
@@ -27,7 +27,11 @@ npm install --save-dev babel-plugin-transform-decorators-legacy babel-plugin-tra
   "plugins": [
     "angular2-annotations",
     "transform-decorators-legacy",
+    "transform-class-properties",
     "transform-flow-strip-types"
+  ],
+  "presets": [
+    "es2015"
   ]
 }
 ```
