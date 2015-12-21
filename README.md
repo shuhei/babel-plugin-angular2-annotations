@@ -25,7 +25,7 @@ npm install --save-dev babel-plugin-transform-decorators-legacy babel-plugin-tra
 ```json
 {
   "plugins": [
-    "angular2-annotation",
+    "angular2-annotations",
     "transform-decorators-legacy",
     "transform-flow-strip-types"
   ]
