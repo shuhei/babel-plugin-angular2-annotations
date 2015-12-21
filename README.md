@@ -53,6 +53,7 @@ npm install --save-dev babylon
 - Class decorators (`@Component()`): works without this plugin
 - Type annotations for constructor parameters (`constructor(foo: Foo, bar: Bar) {}`)
 - Decorators for constructor parameters (`constructor(@Attriute('name') name, @Parent() parent) {}`)
+- Class property decorators: works without this plugin (class property without initializer `@Input() foo;` is supported by this plugin)
 
 ## Example
 
