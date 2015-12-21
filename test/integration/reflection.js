@@ -107,4 +107,20 @@ describe('reflection', () => {
       [Greeter]
     ]);
   });
+
+  it('adds initializer to class property without initializer', () => {
+    class Foo {
+    }
+    Foo.prototype.foo = 123;
+
+    class Bar extends Foo {
+      foo;
+    }
+
+    const bar = new Bar();
+    Foo.prototype.foo = 234;
+
+    expect(bar.foo).toEqual(123);
+
+  });
 });
