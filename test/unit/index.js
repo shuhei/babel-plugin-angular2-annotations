@@ -17,7 +17,8 @@ var fixtures = [
   'normal-class',
   'no-constructor',
   'export-named-class',
-  'export-default-class'
+  'export-default-class',
+  'various-types'
 ];
 var results = fixtures.map(function (fixture) {
   return testing.test(fixture, testTransform.bind(null, fixture));

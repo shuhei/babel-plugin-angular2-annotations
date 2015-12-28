@@ -1,11 +1,8 @@
-import rttsHelper from 'babel-rtts-helper';
 import patch from './patch';
 
 patch();
 
 export default function ({ types: t }) {
-  const helper = rttsHelper({ types: t }, 'assert');
-
   return {
     visitor: {
       ClassDeclaration(path, pass) {
@@ -71,10 +68,7 @@ export default function ({ types: t }) {
   function parameterTypes(params, classRef) {
     const types = params.map((param) => {
       const annotation = param.typeAnnotation && param.typeAnnotation.typeAnnotation;
-      if (!annotation) {
-        return null;
-      }
-      return helper.typeForAnnotation(annotation);
+      return typeForAnnotation(annotation);
     });
     if (!types.some(Boolean)) {
       return [];
@@ -88,5 +82,29 @@ export default function ({ types: t }) {
       t.memberExpression(t.identifier('Reflect'), t.identifier('defineMetadata')),
       [t.stringLiteral(key), value, target]
     ));
+  }
+
+  function typeForAnnotation(annotation) {
+    if (!annotation) {
+      return null;
+    }
+    switch (annotation.type) {
+      case 'StringTypeAnnotation':
+        return t.identifier('String');
+      case 'NumberTypeAnnotation':
+        return t.identifier('Number');
+      case 'BooleanTypeAnnotation':
+        return t.identifier('Boolean');
+      case 'VoidTypeAnnotation':
+        return t.unaryExpression('void', t.numericLiteral(0));
+      case 'GenericTypeAnnotation':
+        return annotation.id;
+      case 'ObjectTypeAnnotation':
+        return t.identifier('Object');
+      case 'FunctionTypeAnnotation':
+        return t.identifier('Function');
+      default:
+        return null;
+    }
   }
 }
