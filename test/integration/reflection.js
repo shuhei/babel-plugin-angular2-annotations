@@ -14,11 +14,9 @@ import {
 import {
   EventEmitter,
   Component,
-  Attribute,
   Input,
   Output,
   ComponentMetadata,
-  AttributeMetadata,
   InputMetadata,
   OutputMetadata,
   reflector
@@ -49,20 +47,6 @@ describe('reflection', () => {
     });
   });
 
-  it('supports constructor parameter decorator', () => {
-    class HelloWorld {
-      constructor(@Attribute('g') greeting, @Attribute() name) {
-        this.greeting = greeting;
-        this.name = name;
-      }
-    }
-
-    expect(reflector.parameters(HelloWorld)).toEqual([
-      [new AttributeMetadata('g')],
-      [new AttributeMetadata()]
-    ]);
-  });
-
   it('supports constructor parameter type annotation', () => {
     class Greeter {
     }
@@ -90,7 +74,7 @@ describe('reflection', () => {
       @Input() foo;
       @Output('g') greetings = new EventEmitter();
 
-      constructor(greeter: Greeter, @Attribute('n') name, anotherGreeter: Greeter) {
+      constructor(greeter: Greeter, anotherGreeter: Greeter) {
       }
     }
 
@@ -103,7 +87,6 @@ describe('reflection', () => {
     ]);
     expect(reflector.parameters(HelloWorld)).toEqual([
       [Greeter],
-      [undefined, new AttributeMetadata('n')],
       [Greeter]
     ]);
   });
