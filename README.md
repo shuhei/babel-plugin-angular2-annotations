@@ -10,6 +10,8 @@ Use `babel-plugin-transform-decorators-legacy` to support Babel 5 decorators.
 
 Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
 
+**Parameter decorator support will be dropped soon because [Babel has forbidden monkey-patching its parser](https://github.com/babel/babel/pull/3204).**
+
 ## Supported decorators/annotations
 
 ### Even without this plugin
