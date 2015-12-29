@@ -4,9 +4,9 @@
 
 # babel-plugin-angular2-annotations
 
-A babel transformer plugin for Angular 2 annotations.
+A babel transformer plugin for Angular 2 decorators and type annotations. **Parameter decorators are not supported.**
 
-Use `babel-plugin-transform-decorators-legacy` to support Babel 5 decorators.
+Use `babel-plugin-transform-decorators-legacy` to support Babel-5-compatible decorators.
 
 Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
 
@@ -17,14 +17,19 @@ Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorato
 ### Even without this plugin
 
 - Class decorators e.g. `@Component() class Foo {}`
-- Class property decorators e.g. `@Output() foo = new EventEmitter();`
-  - Decorated class property with no initializer is supported by this plugin e.g. `@Input() bar;`
+- Class property decorators with initializers e.g. `@Output() foo = new EventEmitter();`
 
 ### With this plugin
 
 - Type annotations for constructor parameters e.g. `constructor(foo: Foo, bar: Bar) {}`
   - Generic types are ignored as same as in TypeScript e.g. `QueryList<RouterLink>` is treated as `QueryList`
+- Class property decorators with no initializer e.g. `@Input() bar;`
+
+### Not supported
+
 - Decorators for constructor parameters e.g. `constructor(@Attriute('name') name, @Parent() parent) {}`
+  - It is inevitable because the parameter decorator syntax is not in [the ES7 proposals](https://github.com/tc39/ecma262) or implemented by Babel's parser.
+  - This plugin used to support it by monkey-patching but [now it is forbidden to do so](https://github.com/babel/babel/pull/3204).
 
 ## Install
 
@@ -52,25 +57,14 @@ npm install --save-dev babel-plugin-transform-decorators-legacy babel-plugin-tra
 }
 ```
 
-### npm 3
-
-That's it.
-
-### npm 2
-
-To monkey-patch `babylon`, the parser of `babel`, should be installed **at the top level**. This is an ugly hack but inevitable to support parameter decorators, which is not currently supported by `babel`, by monkey-patching.
-
-```
-npm install --save-dev babylon
-```
-
 ## Example
 
 Before:
 
 ```js
 class HelloComponent {
-  constructor(@Something({ hello: 'world' }) foo: Foo, bar: Bar) {
+  @Input() baz;
+  constructor(foo: Foo, bar: Bar) {
   }
 }
 ```
@@ -79,9 +73,9 @@ After:
 
 ```js
 class HelloComponent {
+  @Input() baz = this.baz;
 }
 
-Something({ hello: 'world' })(HelloComponent, null, 0);
 Reflect.defineMetadata('design:paramtypes', [Foo, Bar]);
 ```
 
