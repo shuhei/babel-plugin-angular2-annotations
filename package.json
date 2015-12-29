@@ -56,5 +56,8 @@
   },
   "peerDependencies": {
     "babel-plugin-transform-decorators-legacy": "^1.3.3"
+  },
+  "dependencies": {
+    "babel-generator": "^6.3.26"
   }
 }

@@ -1,11 +1,14 @@
 import patch from './patch';
-
 patch();
+
+import generate from 'babel-generator';
+
+const TAG = '[babel-plugin-angular2-annotations]';
 
 export default function ({ types: t }) {
   return {
     visitor: {
-      ClassDeclaration(path, pass) {
+      ClassDeclaration(path) {
         const node = path.node;
         const classRef = node.id;
         const classBody = node.body.body;
@@ -98,6 +101,11 @@ export default function ({ types: t }) {
       case 'VoidTypeAnnotation':
         return t.unaryExpression('void', t.numericLiteral(0));
       case 'GenericTypeAnnotation':
+        if (annotation.typeParameters) {
+          const genericCode = generate(annotation).code;
+          const plainCode = generate(annotation.id).code;
+          console.warn(`${TAG} Generic type is not supported: ${genericCode} Just use: ${plainCode}`);
+        }
         return annotation.id;
       case 'ObjectTypeAnnotation':
         return t.identifier('Object');
