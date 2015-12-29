@@ -1,14 +1,14 @@
-import rttsHelper from 'babel-rtts-helper';
 import patch from './patch';
-
 patch();
 
-export default function ({ types: t }) {
-  const helper = rttsHelper({ types: t }, 'assert');
+import generate from 'babel-generator';
 
+const TAG = '[babel-plugin-angular2-annotations]';
+
+export default function ({ types: t }) {
   return {
     visitor: {
-      ClassDeclaration(path, pass) {
+      ClassDeclaration(path) {
         const node = path.node;
         const classRef = node.id;
         const classBody = node.body.body;
@@ -71,10 +71,7 @@ export default function ({ types: t }) {
   function parameterTypes(params, classRef) {
     const types = params.map((param) => {
       const annotation = param.typeAnnotation && param.typeAnnotation.typeAnnotation;
-      if (!annotation) {
-        return null;
-      }
-      return helper.typeForAnnotation(annotation);
+      return typeForAnnotation(annotation);
     });
     if (!types.some(Boolean)) {
       return [];
@@ -88,5 +85,34 @@ export default function ({ types: t }) {
       t.memberExpression(t.identifier('Reflect'), t.identifier('defineMetadata')),
       [t.stringLiteral(key), value, target]
     ));
+  }
+
+  function typeForAnnotation(annotation) {
+    if (!annotation) {
+      return null;
+    }
+    switch (annotation.type) {
+      case 'StringTypeAnnotation':
+        return t.identifier('String');
+      case 'NumberTypeAnnotation':
+        return t.identifier('Number');
+      case 'BooleanTypeAnnotation':
+        return t.identifier('Boolean');
+      case 'VoidTypeAnnotation':
+        return t.unaryExpression('void', t.numericLiteral(0));
+      case 'GenericTypeAnnotation':
+        if (annotation.typeParameters) {
+          const genericCode = generate(annotation).code;
+          const plainCode = generate(annotation.id).code;
+          console.warn(`${TAG} Generic type is not supported: ${genericCode} Just use: ${plainCode}`);
+        }
+        return annotation.id;
+      case 'ObjectTypeAnnotation':
+        return t.identifier('Object');
+      case 'FunctionTypeAnnotation':
+        return t.identifier('Function');
+      default:
+        return null;
+    }
   }
 }

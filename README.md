@@ -10,6 +10,20 @@ Use `babel-plugin-transform-decorators-legacy` to support Babel 5 decorators.
 
 Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
 
+## Supported decorators/annotations
+
+### Even without this plugin
+
+- Class decorators e.g. `@Component() class Foo {}`
+- Class property decorators e.g. `@Output() foo = new EventEmitter();`
+  - Decorated class property with no initializer is supported by this plugin e.g. `@Input() bar;`
+
+### With this plugin
+
+- Type annotations for constructor parameters e.g. `constructor(foo: Foo, bar: Bar) {}`
+  - Generic types are ignored as same as in TypeScript e.g. `QueryList<RouterLink>` is treated as `QueryList`
+- Decorators for constructor parameters e.g. `constructor(@Attriute('name') name, @Parent() parent) {}`
+
 ## Install
 
 ```sh
@@ -47,13 +61,6 @@ To monkey-patch `babylon`, the parser of `babel`, should be installed **at the t
 ```
 npm install --save-dev babylon
 ```
-
-## Supported annotations
-
-- Class decorators (`@Component()`): works without this plugin
-- Type annotations for constructor parameters (`constructor(foo: Foo, bar: Bar) {}`)
-- Decorators for constructor parameters (`constructor(@Attriute('name') name, @Parent() parent) {}`)
-- Class property decorators: works without this plugin (class property without initializer `@Input() foo;` is supported by this plugin)
 
 ## Example
 
