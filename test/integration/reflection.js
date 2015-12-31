@@ -19,6 +19,7 @@ import {
   ComponentMetadata,
   InputMetadata,
   OutputMetadata,
+  OptionalMetadata,
   reflector
 } from 'angular2/core';
 
@@ -70,6 +71,7 @@ describe('reflection', () => {
     @Component({
       selector: 'hello-world'
     })
+    @Reflect.metadata('parameters', [[], [new OptionalMetadata()]])
     class HelloWorld {
       @Input() foo;
       @Output('g') greetings = new EventEmitter();
@@ -87,7 +89,7 @@ describe('reflection', () => {
     ]);
     expect(reflector.parameters(HelloWorld)).toEqual([
       [Greeter],
-      [Greeter]
+      [Greeter, new OptionalMetadata()]
     ]);
   });
 
