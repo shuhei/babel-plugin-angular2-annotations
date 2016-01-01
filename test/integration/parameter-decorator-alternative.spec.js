@@ -1,9 +1,14 @@
 import {
   Injector, Injectable, provide,
-  Component,
+  Component, Directive,
+  QueryList,
   AttributeMetadata, QueryMetadata, ViewQueryMetadata,
-  InjectMetadata, OptionalMetadata, SelfMetadata, SkipSelfMetadata, HostMetadata
+  InjectMetadata, OptionalMetadata, SelfMetadata, SkipSelfMetadata, HostMetadata,
+  PLATFORM_DIRECTIVES
 } from 'angular2/core';
+import {
+  NgFor
+} from 'angular2/common';
 import {
   AsyncTestCompleter,
   beforeEach,
@@ -17,16 +22,172 @@ import {
 
 describe('parameter decorator alternatives', () => {
   describe('Directive DI', () => {
-    xit('works as @Attribute', inject([], () => {
+    it('works as @Attribute', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
+      @Directive({ selector: 'foo' })
+      @Reflect.metadata('parameters', [[new AttributeMetadata('bar')]])
+      class Foo {
+        constructor(barProp) {
+          this.bar = barProp;
+        }
+      }
+
+      @Component({
+        selector: 'my-comp',
+        directives: [Foo],
+        template: '<foo bar="baz"></foo>'
+      })
+      class MyComp {}
+
+      tcb.createAsync(MyComp)
+        .then((fixture) => {
+          const foo = fixture.debugElement.componentViewChildren[0].componentInstance;
+          expect(foo.bar).toEqual('baz');
+
+          async.done();
+        });
     }));
 
-    xit('works as @Query', inject([], () => {
+    it('works as @Query', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
+      @Component({
+        selector: 'pane',
+        inputs: ['title'],
+        template: `
+          <div><ng-content></ng-content></div>
+        `
+      })
+      class Pane {}
+
+      @Component({
+        selector: 'tabs',
+        directives: [NgFor],
+        template: `
+          <ul>
+            <li *ngFor="#pane of panes">{{pane.title}}</li>
+          </ul>
+          <ng-content></ng-content>
+        `
+      })
+      @Reflect.metadata('parameters', [[new QueryMetadata(Pane)]])
+      class Tabs {
+        constructor(panes: QueryList) {
+          this.panes = panes;
+        }
+      }
+
+      @Component({
+        selector: 'my-comp',
+        directives: [Pane, Tabs, NgFor],
+        template: `
+          <tabs>
+            <pane title="Overview">...</pane>
+            <pane *ngFor="#o of objects" [title]="o.title">{{o.text}}</pane>
+          </tabs>
+        `
+      })
+      class MyComp {
+        objects = [
+          { title: 'foo', text: 'Foo!' },
+          { title: 'bar', text: 'Bar!' },
+          { title: 'baz', text: 'Baz!' }
+        ];
+      }
+
+      tcb.createAsync(MyComp)
+        .then((fixture) => {
+          fixture.detectChanges();
+
+          const tabs = fixture.debugElement.componentViewChildren[0];
+          const listItems = tabs.nativeElement.querySelectorAll('li');
+          expect([...listItems].map((l) => l.textContent)).toEqual(['Overview', 'foo', 'bar', 'baz']);
+          const panes = tabs.nativeElement.querySelectorAll('div');
+          expect([...panes].map((p) => p.textContent)).toEqual(['...', 'Foo!', 'Bar!', 'Baz!']);
+
+          async.done();
+        });
     }));
 
-    xit('works as @ViewQuery', inject([], () => {
+    it('works as @ViewQuery', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
+      @Component({
+        selector: 'item',
+        template: '<ng-content></ng-content>'
+      })
+      class Item {}
+
+      @Component({
+        selector: 'my-comp',
+        directives: [Item],
+        template: `
+          <item>a</item>
+          <item>b</item>
+          <item>c</item>
+        `
+      })
+      @Reflect.metadata('parameters', [[new ViewQueryMetadata(Item)]])
+      class MyComponent {
+        constructor(items: QueryList) {
+          this.items = items;
+        }
+      }
+
+      tcb.createAsync(MyComponent)
+        .then((fixture) => {
+          const items = fixture.componentInstance.items;
+          items.changes.subscribe(() => {
+            expect(items.length).toEqual(3);
+
+            async.done();
+          });
+
+          fixture.detectChanges();
+        });
     }));
 
-    xit('works as @Host', inject([], () => {
+    it('works as @Host', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
+      class OtherService {}
+      class HostService {}
+
+      @Directive({ selector: 'child-directive' })
+      @Reflect.metadata('parameters', [
+        [new OptionalMetadata(), new HostMetadata()],
+        [new OptionalMetadata(), new HostMetadata()]
+      ])
+      class ChildDirective {
+        constructor(os: OtherService, hs: HostService) {
+          this.os = os;
+          this.hs = hs;
+        }
+      }
+
+      @Component({
+        selector: 'parent-cmp',
+        viewProviders: [HostService],
+        template: 'Dir: <child-directive></child-directive>',
+        directives: [ChildDirective]
+      })
+      class ParentCmp {}
+
+      @Component({
+        selector: 'app',
+        viewProviders: [OtherService],
+        template: `
+          Parent: <parent-cmp></parent-cmp>
+        `,
+        directives: [ParentCmp]
+      })
+      class App {}
+
+      tcb.createAsync(App)
+        .then((fixture) => {
+          fixture.detectChanges();
+
+          const parent = fixture.debugElement.componentViewChildren[0];
+          const childInstance = parent.componentViewChildren[0].componentInstance;
+          expect(childInstance.os).toBeNull();
+          expect(childInstance.hs).toBeAnInstanceOf(HostService)
+
+          async.done();
+        })
+        .catch((e) => console.error(e));
     }));
   });
 
@@ -47,7 +208,7 @@ describe('parameter decorator alternatives', () => {
         Car
       ]);
 
-      expect(injector.get(Car).engine instanceof Engine).toBe(true);
+      expect(injector.get(Car).engine).toBeAnInstanceOf(Engine);
     });
 
     it('works as @Optional', inject([], () => {
@@ -78,7 +239,7 @@ describe('parameter decorator alternatives', () => {
       }
 
       const injector = Injector.resolveAndCreate([Dependency, NeedsDependency]);
-      expect(injector.get(NeedsDependency).dependency instanceof Dependency).toBe(true);
+      expect(injector.get(NeedsDependency).dependency).toBeAnInstanceOf(Dependency);
 
       const parent= Injector.resolveAndCreate([Dependency]);
       const child= parent.resolveAndCreateChild([NeedsDependency]);
@@ -101,7 +262,7 @@ describe('parameter decorator alternatives', () => {
 
       const parent= Injector.resolveAndCreate([Dependency]);
       const child= parent.resolveAndCreateChild([NeedsDependency]);
-      expect(child.get(NeedsDependency).dependency instanceof Dependency).toBe(true);
+      expect(child.get(NeedsDependency).dependency).toBeAnInstanceOf(Dependency);
     }));
   });
 });
