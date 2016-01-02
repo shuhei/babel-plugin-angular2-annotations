@@ -4,32 +4,86 @@
 
 # babel-plugin-angular2-annotations
 
-A babel transformer plugin for Angular 2 decorators and type annotations. **Parameter decorators are not supported.**
+A babel transformer plugin for Angular 2 decorators and type annotations. **Parameter decorator is not supported because there's currently no way to extend Babel's parser.**
 
-Use `babel-plugin-transform-decorators-legacy` to support Babel-5-compatible decorators.
+Use [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) to support Babel-5-compatible decorators.
 
 Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
 
-**Parameter decorator support will be dropped soon because [Babel has forbidden monkey-patching its parser](https://github.com/babel/babel/pull/3204).**
-
 ## Supported decorators/annotations
 
-### Even without this plugin
+### Even without this plugin (thanks to [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy))
 
-- Class decorators e.g. `@Component() class Foo {}`
-- Class property decorators with initializers e.g. `@Output() foo = new EventEmitter();`
+- Class decorators
+
+  ```js
+  @Component({ selector: 'hello' })
+  class HelloComponent {}
+  ```
+
+- Class property decorators with initializers
+
+  ```js
+  @Component({ /* ... */ })
+  class HelloComponent {
+    @Output() foo = new EventEmitter();`
+  }
+  ```
 
 ### With this plugin
 
-- Type annotations for constructor parameters e.g. `constructor(foo: Foo, bar: Bar) {}`
+- Type annotations for constructor parameters
+
+  ```js
+  class Hello {
+    constructor(foo: Foo, bar: Bar) {
+      this.foo = foo;
+      this.bar = bar;
+    }
+  }
+  ```
+
   - Generic types are ignored as same as in TypeScript e.g. `QueryList<RouterLink>` is treated as `QueryList`
-- Class property decorators with no initializer e.g. `@Input() bar;`
+
+- Class property decorators with no initializer
+
+  ```js
+  @Component({ /* ... */ })
+  class HelloComponent {
+    @Input() bar;
+  }
+  ```
 
 ### Not supported
 
-- Decorators for constructor parameters e.g. `constructor(@Attriute('name') name, @Parent() parent) {}`
+- Decorators for constructor parameters
+
+  ```js
+  @Component({ /* ... */ })
+  class HelloComponent {
+    constructor(@Attriute('name') name, @Optional() optional) {
+      this.name = name;
+      this.optional = optional;
+    }
+  }
+  ```
+
   - It is inevitable because the parameter decorator syntax is not in [the ES7 proposals](https://github.com/tc39/ecma262) or implemented by Babel's parser.
   - This plugin used to support it by monkey-patching but [now it is forbidden to do so](https://github.com/babel/babel/pull/3204).
+  - You can still directly use parameter decorator metadata to achieve the same functionalities.
+
+    ```js
+    @Component({ /* ... */ })
+    @Reflect.metadata('parameters', [[new AttributeMetadata()], [new OptionalMetadata()]])
+    class HelloComponent {
+      constructor(name, optional) {
+        this.name = name;
+        this.optional = optional;
+      }
+    }
+    ```
+
+    More examples are in [the integration tests](test/integration/parameter-decorator-alternative.spec.js).
 
 ## Install
 
