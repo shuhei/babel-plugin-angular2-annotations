@@ -8,7 +8,7 @@ class HelloComponent {
     obj: Object,
     objProps: { foo: string, bar: number },
     func: (foo: string) => number,
-    @Query(RouterLink) routerLinks: QueryList<RouterLink>
+    routerLinks: QueryList<RouterLink>
   ) {
   }
 }

@@ -1,6 +1,3 @@
-import patch from './patch';
-patch();
-
 import generate from 'babel-generator';
 
 const TAG = '[babel-plugin-angular2-annotations]';
@@ -13,12 +10,10 @@ export default function ({ types: t }) {
         const classRef = node.id;
         const classBody = node.body.body;
 
-        // Create additional statements for parameter decorators and types.
-        let decorators = [];
+        // Create additional statements for types annotations.
         let types = [];
         classBody.forEach((bodyNode) => {
           if (bodyNode.type === 'ClassMethod' && bodyNode.kind === 'constructor') {
-            decorators = parameterDecorators(bodyNode.params, classRef);
             types = parameterTypes(bodyNode.params, classRef);
           } else if (bodyNode.type === 'ClassProperty' && bodyNode.value === null && !bodyNode.static) {
             // Handle class property without initializer.
@@ -26,7 +21,7 @@ export default function ({ types: t }) {
             bodyNode.value = t.memberExpression(t.thisExpression(), bodyNode.key);
           }
         });
-        const additionalStatements = [...decorators, ...types].filter(Boolean);
+        const additionalStatements = types.filter(Boolean);
 
         // If not found, do nothing.
         if (additionalStatements.length === 0) {
@@ -44,27 +39,6 @@ export default function ({ types: t }) {
       }
     }
   };
-
-  // Returns an array of parameter decorator call statements for a class.
-  function parameterDecorators(params, classRef) {
-    const decoratorLists = params.map((param, i) => {
-      const decorators = param.decorators;
-      if (!decorators) {
-        return [];
-      }
-      // Delete parameter decorators because they are invalid in vanilla babel.
-      // They might be just ignored in generator though.
-      param.decorators = null;
-
-      return decorators.map((decorator) => {
-        const call = decorator.expression;
-        const args = [classRef, t.identifier('null'), t.identifier(i.toString())];
-        return t.expressionStatement(t.callExpression(call, args));
-      });
-    });
-    // Flatten.
-    return Array.prototype.concat.apply([], decoratorLists);
-  }
 
   // Returns an array of define 'parameters' metadata statements for a class.
   // The array may contain zero or one statements.

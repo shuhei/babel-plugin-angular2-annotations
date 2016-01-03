@@ -1,10 +1,3 @@
-import 'zone.js/lib/browser/zone-microtask';
-import 'reflect-metadata';
-import 'babel-polyfill';
-
-import {BrowserDomAdapter} from 'angular2/platform/browser'
-BrowserDomAdapter.makeCurrent();
-
 import {
   describe,
   expect,
@@ -14,13 +7,12 @@ import {
 import {
   EventEmitter,
   Component,
-  Attribute,
   Input,
   Output,
   ComponentMetadata,
-  AttributeMetadata,
   InputMetadata,
   OutputMetadata,
+  OptionalMetadata,
   reflector
 } from 'angular2/core';
 
@@ -49,20 +41,6 @@ describe('reflection', () => {
     });
   });
 
-  it('supports constructor parameter decorator', () => {
-    class HelloWorld {
-      constructor(@Attribute('g') greeting, @Attribute() name) {
-        this.greeting = greeting;
-        this.name = name;
-      }
-    }
-
-    expect(reflector.parameters(HelloWorld)).toEqual([
-      [new AttributeMetadata('g')],
-      [new AttributeMetadata()]
-    ]);
-  });
-
   it('supports constructor parameter type annotation', () => {
     class Greeter {
     }
@@ -86,11 +64,12 @@ describe('reflection', () => {
     @Component({
       selector: 'hello-world'
     })
+    @Reflect.metadata('parameters', [[], [new OptionalMetadata()]])
     class HelloWorld {
       @Input() foo;
       @Output('g') greetings = new EventEmitter();
 
-      constructor(greeter: Greeter, @Attribute('n') name, anotherGreeter: Greeter) {
+      constructor(greeter: Greeter, anotherGreeter: Greeter) {
       }
     }
 
@@ -103,8 +82,7 @@ describe('reflection', () => {
     ]);
     expect(reflector.parameters(HelloWorld)).toEqual([
       [Greeter],
-      [undefined, new AttributeMetadata('n')],
-      [Greeter]
+      [Greeter, new OptionalMetadata()]
     ]);
   });
 
