@@ -134,3 +134,7 @@ Reflect.defineMetadata('design:paramtypes', [Foo, Bar]);
 ```
 
 See [babel-angular2-app](https://github.com/shuhei/babel-angular2-app) for more complete example.
+
+## License
+
+[ISC](https://opensource.org/licenses/ISC)
