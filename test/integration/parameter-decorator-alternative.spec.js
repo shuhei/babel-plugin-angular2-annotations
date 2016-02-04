@@ -40,7 +40,7 @@ describe('parameter decorator alternatives', () => {
 
       tcb.createAsync(MyComp)
         .then((fixture) => {
-          const foo = fixture.debugElement.componentViewChildren[0].componentInstance;
+          const foo = fixture.debugElement.children[0].componentInstance;
           expect(foo.bar).toEqual('baz');
 
           async.done();
@@ -96,7 +96,7 @@ describe('parameter decorator alternatives', () => {
         .then((fixture) => {
           fixture.detectChanges();
 
-          const tabs = fixture.debugElement.componentViewChildren[0];
+          const tabs = fixture.debugElement.children[0];
           const listItems = tabs.nativeElement.querySelectorAll('li');
           expect([...listItems].map((l) => l.textContent)).toEqual(['Overview', 'foo', 'bar', 'baz']);
           const panes = tabs.nativeElement.querySelectorAll('div');
@@ -180,8 +180,8 @@ describe('parameter decorator alternatives', () => {
         .then((fixture) => {
           fixture.detectChanges();
 
-          const parent = fixture.debugElement.componentViewChildren[0];
-          const childInstance = parent.componentViewChildren[0].componentInstance;
+          const parent = fixture.debugElement.children[0];
+          const childInstance = parent.children[0].componentInstance;
           expect(childInstance.os).toBeNull();
           expect(childInstance.hs).toBeAnInstanceOf(HostService)
 
