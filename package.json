@@ -27,7 +27,7 @@
   "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "angular2": "^2.0.0-beta.3",
+    "angular2": "^2.0.0-beta.7",
     "babel-cli": "^6.3.17",
     "babel-core": "^6.3.17",
     "babel-eslint": "^5.0.0-beta6",
@@ -50,10 +50,9 @@
     "karma-source-map-support": "^1.1.0",
     "phantomjs-prebuilt": "^2.1.3",
     "reflect-metadata": "0.1.2",
-    "rxjs": "5.0.0-beta.0",
+    "rxjs": "5.0.0-beta.2",
     "tape": "^4.2.2",
-    "tsd": "^0.6.5",
-    "zone.js": "0.5.11"
+    "zone.js": "0.5.15"
   },
   "peerDependencies": {
     "babel-plugin-transform-decorators-legacy": "^1.3.3"
