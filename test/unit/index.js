@@ -30,7 +30,7 @@ function testTransform(fixtureName) {
   var expected = fs.readFileSync(path.resolve(__dirname, 'fixtures', fixtureName, 'expected.js')).toString();
   var actual = babel.transform(fixture, {
     plugins: [
-      './../src',
+      './src',
       'external-helpers-2',
       'transform-decorators-legacy',
       'transform-class-properties',

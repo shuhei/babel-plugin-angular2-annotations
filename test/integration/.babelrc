@@ -1,6 +1,6 @@
 {
   "plugins": [
-    "../lib/index.js",
+    "../../lib/index.js",
     "transform-decorators-legacy",
     "transform-class-properties",
     "transform-flow-strip-types"
