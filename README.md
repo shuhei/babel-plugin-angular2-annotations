@@ -61,7 +61,7 @@ Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorato
   ```js
   @Component({ /* ... */ })
   class HelloComponent {
-    constructor(@Attriute('name') name, @Optional() optional) {
+    constructor(@Attribute('name') name, @Optional() optional) {
       this.name = name;
       this.optional = optional;
     }
