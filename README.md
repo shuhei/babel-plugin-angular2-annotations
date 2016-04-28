@@ -133,7 +133,7 @@ class HelloComponent {
 Reflect.defineMetadata('design:paramtypes', [Foo, Bar]);
 ```
 
-See [babel-angular2-app](https://github.com/shuhei/babel-angular2-app) for more complete example.
+See [babel-angular2-app](https://github.com/shuhei/babel-angular2-app) or [angular2-esnext-starter](https://github.com/blacksonic/angular2-esnext-starter) for more complete example.
 
 ## License
 
