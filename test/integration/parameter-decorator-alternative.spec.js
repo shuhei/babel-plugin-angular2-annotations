@@ -1,5 +1,5 @@
 import {
-  Injector, Injectable, provide,
+  ReflectiveInjector, Injectable, provide,
   Component, Directive,
   QueryList,
   AttributeMetadata, QueryMetadata, ViewQueryMetadata,
@@ -10,20 +10,23 @@ import {
   NgFor
 } from 'angular2/common';
 import {
-  AsyncTestCompleter,
   beforeEach,
   describe,
   expect,
   inject,
   it,
   xit,
+  async,
   TestComponentBuilder,
-} from 'angular2/testing_internal';
+} from 'angular2/testing';
 
 describe('parameter decorator alternatives', () => {
   describe('Directive DI', () => {
-    it('works as @Attribute', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
-      @Directive({ selector: 'foo' })
+    it('works as @Attribute', async(inject([TestComponentBuilder], (tcb) => {
+      @Component({
+        selector: 'foo',
+        template: '{{bar}}'
+      })
       @Reflect.metadata('parameters', [[new AttributeMetadata('bar')]])
       class Foo {
         constructor(barProp) {
@@ -42,12 +45,10 @@ describe('parameter decorator alternatives', () => {
         .then((fixture) => {
           const foo = fixture.debugElement.children[0].componentInstance;
           expect(foo.bar).toEqual('baz');
-
-          async.done();
         });
-    }));
+    })));
 
-    it('works as @Query', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
+    it('works as @Query', async(inject([TestComponentBuilder], (tcb) => {
       @Component({
         selector: 'pane',
         inputs: ['title'],
@@ -62,7 +63,7 @@ describe('parameter decorator alternatives', () => {
         directives: [NgFor],
         template: `
           <ul>
-            <li *ngFor="#pane of panes">{{pane.title}}</li>
+            <li *ngFor="let pane of panes">{{pane.title}}</li>
           </ul>
           <ng-content></ng-content>
         `
@@ -80,7 +81,7 @@ describe('parameter decorator alternatives', () => {
         template: `
           <tabs>
             <pane title="Overview">...</pane>
-            <pane *ngFor="#o of objects" [title]="o.title">{{o.text}}</pane>
+            <pane *ngFor="let o of objects" [title]="o.title">{{o.text}}</pane>
           </tabs>
         `
       })
@@ -101,12 +102,10 @@ describe('parameter decorator alternatives', () => {
           expect([...listItems].map((l) => l.textContent)).toEqual(['Overview', 'foo', 'bar', 'baz']);
           const panes = tabs.nativeElement.querySelectorAll('div');
           expect([...panes].map((p) => p.textContent)).toEqual(['...', 'Foo!', 'Bar!', 'Baz!']);
-
-          async.done();
         });
-    }));
+    })));
 
-    it('works as @ViewQuery', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
+    it('works as @ViewQuery', async(inject([TestComponentBuilder], (tcb) => {
       @Component({
         selector: 'item',
         template: '<ng-content></ng-content>'
@@ -134,19 +133,20 @@ describe('parameter decorator alternatives', () => {
           const items = fixture.componentInstance.items;
           items.changes.subscribe(() => {
             expect(items.length).toEqual(3);
-
-            async.done();
           });
 
           fixture.detectChanges();
         });
-    }));
+    })));
 
-    it('works as @Host', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
+    it('works as @Host', async(inject([TestComponentBuilder], (tcb) => {
       class OtherService {}
       class HostService {}
 
-      @Directive({ selector: 'child-directive' })
+      @Component({
+        selector: 'child-directive',
+        template: 'child'
+      })
       @Reflect.metadata('parameters', [
         [new OptionalMetadata(), new HostMetadata()],
         [new OptionalMetadata(), new HostMetadata()]
@@ -183,12 +183,9 @@ describe('parameter decorator alternatives', () => {
           const parent = fixture.debugElement.children[0];
           const childInstance = parent.children[0].componentInstance;
           expect(childInstance.os).toBeNull();
-          expect(childInstance.hs).toBeAnInstanceOf(HostService)
-
-          async.done();
-        })
-        .catch((e) => console.error(e));
-    }));
+          expect(childInstance.hs).toBeAnInstanceOf(HostService);
+        });
+    })));
   });
 
   describe('Pure DI', () => {
@@ -203,7 +200,7 @@ describe('parameter decorator alternatives', () => {
         }
       }
 
-      const injector = Injector.resolveAndCreate([
+      const injector = ReflectiveInjector.resolveAndCreate([
         provide('MyEngine', { useClass: Engine }),
         Car
       ]);
@@ -222,7 +219,7 @@ describe('parameter decorator alternatives', () => {
         }
       }
 
-      const injector = Injector.resolveAndCreate([Car]);
+      const injector = ReflectiveInjector.resolveAndCreate([Car]);
 
       expect(injector.get(Car).engine).toBeNull();
     }));
@@ -238,10 +235,10 @@ describe('parameter decorator alternatives', () => {
         }
       }
 
-      const injector = Injector.resolveAndCreate([Dependency, NeedsDependency]);
+      const injector = ReflectiveInjector.resolveAndCreate([Dependency, NeedsDependency]);
       expect(injector.get(NeedsDependency).dependency).toBeAnInstanceOf(Dependency);
 
-      const parent= Injector.resolveAndCreate([Dependency]);
+      const parent= ReflectiveInjector.resolveAndCreate([Dependency]);
       const child= parent.resolveAndCreateChild([NeedsDependency]);
       expect(() => child.get(NeedsDependency)).toThrowError();
     }));
@@ -257,10 +254,10 @@ describe('parameter decorator alternatives', () => {
         }
       }
 
-      const injector = Injector.resolveAndCreate([Dependency, NeedsDependency]);
+      const injector = ReflectiveInjector.resolveAndCreate([Dependency, NeedsDependency]);
       expect(() => injector.get(NeedsDependency)).toThrowError();
 
-      const parent= Injector.resolveAndCreate([Dependency]);
+      const parent= ReflectiveInjector.resolveAndCreate([Dependency]);
       const child= parent.resolveAndCreateChild([NeedsDependency]);
       expect(child.get(NeedsDependency).dependency).toBeAnInstanceOf(Dependency);
     }));

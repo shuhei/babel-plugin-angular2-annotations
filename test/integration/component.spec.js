@@ -5,17 +5,17 @@ import {
   ViewMetadata
 } from 'angular2/core';
 import {
-  AsyncTestCompleter,
   beforeEach,
   describe,
   expect,
   inject,
   it,
-  TestComponentBuilder,
-} from 'angular2/testing_internal';
+  async,
+  TestComponentBuilder
+} from 'angular2/testing';
 
 describe('component', () => {
-  it('works with class/prop/param decorators and type annotations', inject([TestComponentBuilder, AsyncTestCompleter], (tcb, async) => {
+  it('works with class/prop/param decorators and type annotations', async(inject([TestComponentBuilder], (tcb) => {
     class Greeter {
       say(greeting, name) {
         return `${greeting}, ${name}!`;
@@ -53,8 +53,6 @@ describe('component', () => {
 
         fixture.detectChanges();
         expect(fixture.debugElement.nativeElement).toHaveText('Hello, Babel!');
-        async.done();
-      })
-      .catch((e) => console.error(e));
-  }));
+      });
+  })));
 });

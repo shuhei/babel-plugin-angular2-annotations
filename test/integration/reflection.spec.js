@@ -2,7 +2,7 @@ import {
   describe,
   expect,
   it
-} from 'angular2/testing_internal';
+} from 'angular2/testing';
 
 import {
   EventEmitter,
