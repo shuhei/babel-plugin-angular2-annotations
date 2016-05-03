@@ -5,10 +5,10 @@ import {
   AttributeMetadata, QueryMetadata, ViewQueryMetadata,
   InjectMetadata, OptionalMetadata, SelfMetadata, SkipSelfMetadata, HostMetadata,
   PLATFORM_DIRECTIVES
-} from 'angular2/core';
+} from '@angular/core';
 import {
   NgFor
-} from 'angular2/common';
+} from '@angular/common';
 import {
   beforeEach,
   describe,
@@ -16,9 +16,9 @@ import {
   inject,
   it,
   xit,
-  async,
-  TestComponentBuilder,
-} from 'angular2/testing';
+  async
+} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing';
 
 describe('parameter decorator alternatives', () => {
   describe('Directive DI', () => {

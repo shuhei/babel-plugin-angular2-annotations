@@ -3,16 +3,16 @@ import {
   View,
   Input,
   ViewMetadata
-} from 'angular2/core';
+} from '@angular/core';
 import {
   beforeEach,
   describe,
   expect,
   inject,
   it,
-  async,
-  TestComponentBuilder
-} from 'angular2/testing';
+  async
+} from '@angular/core/testing';
+import {TestComponentBuilder} from '@angular/compiler/testing'
 
 describe('component', () => {
   it('works with class/prop/param decorators and type annotations', async(inject([TestComponentBuilder], (tcb) => {

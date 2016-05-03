@@ -2,7 +2,7 @@ import {
   describe,
   expect,
   it
-} from 'angular2/testing';
+} from '@angular/core/testing';
 
 import {
   EventEmitter,
@@ -14,7 +14,7 @@ import {
   OutputMetadata,
   OptionalMetadata,
   reflector
-} from 'angular2/core';
+} from '@angular/core';
 
 describe('reflection', () => {
   it('supports class decorator', () => {
