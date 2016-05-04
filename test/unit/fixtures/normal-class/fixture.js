@@ -1,5 +1,5 @@
 @Component({ selector: "hello" })
 class HelloComponent {
-  constructor(foo: Foo, bar: Bar) {
+  constructor(@Yes({ key: "value" }) @No() foo: Foo, bar: Bar) {
   }
 }

@@ -7,12 +7,13 @@ import {
 import {
   EventEmitter,
   Component,
+  Attribute,
   Input,
   Output,
   ComponentMetadata,
+  AttributeMetadata,
   InputMetadata,
   OutputMetadata,
-  OptionalMetadata,
   reflector
 } from '@angular/core';
 
@@ -41,6 +42,20 @@ describe('reflection', () => {
     });
   });
 
+  it('supports constructor parameter decorator', () => {
+    class HelloWorld {
+      constructor(@Attribute('g') greeting, @Attribute() name) {
+        this.greeting = greeting;
+        this.name = name;
+      }
+    }
+
+    expect(reflector.parameters(HelloWorld)).toEqual([
+      [new AttributeMetadata('g')],
+      [new AttributeMetadata()]
+    ]);
+  });
+
   it('supports constructor parameter type annotation', () => {
     class Greeter {
     }
@@ -64,12 +79,11 @@ describe('reflection', () => {
     @Component({
       selector: 'hello-world'
     })
-    @Reflect.metadata('parameters', [[], [new OptionalMetadata()]])
     class HelloWorld {
       @Input() foo;
       @Output('g') greetings = new EventEmitter();
 
-      constructor(greeter: Greeter, anotherGreeter: Greeter) {
+      constructor(greeter: Greeter, @Attribute('n') name, anotherGreeter: Greeter) {
       }
     }
 
@@ -82,7 +96,8 @@ describe('reflection', () => {
     ]);
     expect(reflector.parameters(HelloWorld)).toEqual([
       [Greeter],
-      [Greeter, new OptionalMetadata()]
+      [undefined, new AttributeMetadata('n')],
+      [Greeter]
     ]);
   });
 

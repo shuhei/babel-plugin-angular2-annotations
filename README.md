@@ -4,9 +4,9 @@
 
 # babel-plugin-angular2-annotations
 
-A babel transformer plugin for Angular 2 decorators and type annotations. **Parameter decorator is not supported because there's currently no way to extend Babel's parser.**
+A babel transformer plugin for Angular 2 decorators and type annotations.
 
-Use [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) to support Babel-5-compatible decorators.
+Use [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) to support decorators.
 
 Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
 
@@ -54,8 +54,6 @@ Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorato
   }
   ```
 
-### Not supported
-
 - Decorators for constructor parameters
 
   ```js
@@ -67,23 +65,6 @@ Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorato
     }
   }
   ```
-
-  - It is inevitable because the parameter decorator syntax is not in [the ES7 proposals](https://github.com/tc39/ecma262) or implemented by Babel's parser.
-  - This plugin used to support it by monkey-patching but [now it is forbidden to do so](https://github.com/babel/babel/pull/3204).
-  - You can still directly use parameter decorator metadata to achieve the same functionalities.
-
-    ```js
-    @Component({ /* ... */ })
-    @Reflect.metadata('parameters', [[new AttributeMetadata()], [new OptionalMetadata()]])
-    class HelloComponent {
-      constructor(name, optional) {
-        this.name = name;
-        this.optional = optional;
-      }
-    }
-    ```
-
-    More examples are in [the integration tests](test/integration/parameter-decorator-alternative.spec.js).
 
 ## Install
 
@@ -118,7 +99,7 @@ Before:
 ```js
 class HelloComponent {
   @Input() baz;
-  constructor(foo: Foo, bar: Bar) {
+  constructor(foo: Foo, @Optional() bar: Bar) {
   }
 }
 ```
@@ -130,6 +111,7 @@ class HelloComponent {
   @Input() baz = this.baz;
 }
 
+Optional()(HelloComponent, null, 1);
 Reflect.defineMetadata('design:paramtypes', [Foo, Bar]);
 ```
 

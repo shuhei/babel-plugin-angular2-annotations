@@ -2,6 +2,7 @@ import {
   Component,
   View,
   Input,
+  Attribute,
   ViewMetadata
 } from '@angular/core';
 import {
@@ -27,10 +28,10 @@ describe('component', () => {
       template: '<p>{{message}}</p>'
     })
     class HelloWorld {
-      @Input() name;
       @Input() greeting;
 
-      constructor(greeter: Greeter) {
+      constructor(@Attribute('name') name, greeter: Greeter) {
+        this.name = name;
         this.greeter = greeter;
       }
 
