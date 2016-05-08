@@ -52,7 +52,6 @@
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-source-map-support": "^1.1.0",
     "phantomjs-prebuilt": "^2.1.7",
-    "reflect-metadata": "0.1.2",
     "rxjs": "5.0.0-beta.6",
     "tape": "^4.5.1",
     "watchify": "^3.7.0",

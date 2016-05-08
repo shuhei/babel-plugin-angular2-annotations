@@ -8,8 +8,6 @@ A babel transformer plugin for Angular 2 decorators and type annotations.
 
 Use [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy) to support decorators.
 
-Make sure to load [reflect-metadata](https://github.com/rbuckton/ReflectDecorators) for browser in order to polyfill Metadata Reflection API in your app.
-
 ## Supported decorators/annotations
 
 ### Even without this plugin (thanks to [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy))
