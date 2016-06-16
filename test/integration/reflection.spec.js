@@ -14,8 +14,10 @@ import {
   AttributeMetadata,
   InputMetadata,
   OutputMetadata,
-  reflector
+  __core_private__
 } from '@angular/core';
+
+const reflector = __core_private__.reflector;
 
 describe('reflection', () => {
   it('supports class decorator', () => {
