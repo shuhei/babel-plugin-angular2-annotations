@@ -1,10 +1,4 @@
 import {
-  describe,
-  expect,
-  it
-} from '@angular/core/testing';
-
-import {
   EventEmitter,
   Component,
   Attribute,
