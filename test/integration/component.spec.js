@@ -5,18 +5,10 @@ import {
   Attribute,
   ViewMetadata
 } from '@angular/core';
-import {
-  beforeEach,
-  describe,
-  expect,
-  inject,
-  it,
-  async
-} from '@angular/core/testing';
-import {TestComponentBuilder} from '@angular/compiler/testing'
+import { TestBed } from '@angular/core/testing'
 
 describe('component', () => {
-  it('works with class/prop/param decorators and type annotations', async(inject([TestComponentBuilder], (tcb) => {
+  it('works with class/prop/param decorators and type annotations', () => {
     class Greeter {
       say(greeting, name) {
         return `${greeting}, ${name}!`;
@@ -48,12 +40,11 @@ describe('component', () => {
     })
     class MyComp {}
 
-    tcb.createAsync(MyComp)
-      .then((fixture) => {
-        fixture.debugElement.componentInstance.greeting = 'Hello';
+    TestBed.configureTestingModule({ declarations: [MyComp] });
+    const fixture = TestBed.createComponent(MyComp);
+    fixture.debugElement.componentInstance.greeting = 'Hello';
 
-        fixture.detectChanges();
-        expect(fixture.debugElement.nativeElement).toHaveText('Hello, Babel!');
-      });
-  })));
+    fixture.detectChanges();
+    expect(fixture.debugElement.nativeElement.textContent).toEqual('Hello, Babel!');
+  });
 });
