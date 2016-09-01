@@ -40,7 +40,7 @@ describe('component', () => {
     })
     class MyComp {}
 
-    TestBed.configureTestingModule({ declarations: [MyComp] });
+    TestBed.configureTestingModule({ declarations: [MyComp, HelloWorld] });
     const fixture = TestBed.createComponent(MyComp);
     fixture.debugElement.componentInstance.greeting = 'Hello';
 
