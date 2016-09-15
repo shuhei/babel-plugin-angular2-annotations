@@ -4,10 +4,6 @@ import {
   Attribute,
   Input,
   Output,
-  ComponentMetadata,
-  AttributeMetadata,
-  InputMetadata,
-  OutputMetadata,
   __core_private__
 } from '@angular/core';
 
@@ -22,7 +18,7 @@ describe('reflection', () => {
     }
 
     expect(reflector.annotations(HelloWorld)).toEqual([
-      new ComponentMetadata({ selector: 'hello-world' })
+      new Component({ selector: 'hello-world' })
     ]);
   });
 
@@ -33,8 +29,8 @@ describe('reflection', () => {
     }
 
     expect(reflector.propMetadata(HelloWorld)).toEqual({
-      name: [new InputMetadata()],
-      greetings: [new OutputMetadata('g')]
+      name: [new Input()],
+      greetings: [new Output('g')]
     });
   });
 
@@ -47,8 +43,8 @@ describe('reflection', () => {
     }
 
     expect(reflector.parameters(HelloWorld)).toEqual([
-      [new AttributeMetadata('g')],
-      [new AttributeMetadata()]
+      [new Attribute('g')],
+      [new Attribute()]
     ]);
   });
 
@@ -84,15 +80,15 @@ describe('reflection', () => {
     }
 
     expect(reflector.propMetadata(HelloWorld)).toEqual({
-      foo: [new InputMetadata()],
-      greetings: [new OutputMetadata('g')]
+      foo: [new Input()],
+      greetings: [new Output('g')]
     });
     expect(reflector.annotations(HelloWorld)).toEqual([
-      new ComponentMetadata({ selector: 'hello-world' })
+      new Component({ selector: 'hello-world' })
     ]);
     expect(reflector.parameters(HelloWorld)).toEqual([
       [Greeter],
-      [undefined, new AttributeMetadata('n')],
+      [undefined, new Attribute('n')],
       [Greeter]
     ]);
   });

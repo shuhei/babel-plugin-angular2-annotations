@@ -27,11 +27,11 @@
   "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "@angular/common": "2.0.0-rc.6",
-    "@angular/compiler": "2.0.0-rc.6",
-    "@angular/core": "2.0.0-rc.6",
-    "@angular/platform-browser": "2.0.0-rc.6",
-    "@angular/platform-browser-dynamic": "2.0.0-rc.6",
+    "@angular/common": "2.0.0-rc.7",
+    "@angular/compiler": "2.0.0-rc.7",
+    "@angular/core": "2.0.0-rc.7",
+    "@angular/platform-browser": "2.0.0-rc.7",
+    "@angular/platform-browser-dynamic": "2.0.0-rc.7",
     "babel-cli": "^6.8.0",
     "babel-core": "^6.8.0",
     "babel-eslint": "^6.0.4",
@@ -52,10 +52,10 @@
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-source-map-support": "^1.1.0",
     "phantomjs-prebuilt": "^2.1.7",
-    "rxjs": "5.0.0-beta.11",
+    "rxjs": "5.0.0-beta.12",
     "tape": "^4.5.1",
     "watchify": "^3.7.0",
-    "zone.js": "^0.6.17"
+    "zone.js": "^0.6.21"
   },
   "peerDependencies": {
     "babel-plugin-transform-decorators-legacy": "^1.3.4"

@@ -2,8 +2,7 @@ import {
   Component,
   View,
   Input,
-  Attribute,
-  ViewMetadata
+  Attribute
 } from '@angular/core';
 import { TestBed } from '@angular/core/testing'
 
