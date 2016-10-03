@@ -24,7 +24,7 @@ Use [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/ba
   ```js
   @Component({ /* ... */ })
   class HelloComponent {
-    @Output() foo = new EventEmitter();`
+    @Output() foo = new EventEmitter();
   }
   ```
 
