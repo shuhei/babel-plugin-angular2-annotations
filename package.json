@@ -27,11 +27,11 @@
   "author": "Shuhei Kagawa <shuhei.kagawa@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "@angular/common": "2.0.0",
-    "@angular/compiler": "2.0.0",
-    "@angular/core": "2.0.0",
-    "@angular/platform-browser": "2.0.0",
-    "@angular/platform-browser-dynamic": "2.0.0",
+    "@angular/common": "2.1.1",
+    "@angular/compiler": "2.1.1",
+    "@angular/core": "2.1.1",
+    "@angular/platform-browser": "2.1.1",
+    "@angular/platform-browser-dynamic": "2.1.1",
     "babel-cli": "^6.8.0",
     "babel-core": "^6.8.0",
     "babel-eslint": "^6.0.4",
@@ -55,7 +55,7 @@
     "rxjs": "5.0.0-beta.12",
     "tape": "^4.5.1",
     "watchify": "^3.7.0",
-    "zone.js": "^0.6.21"
+    "zone.js": "^0.6.25"
   },
   "peerDependencies": {
     "babel-plugin-transform-decorators-legacy": "^1.3.4"
